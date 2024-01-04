@@ -1,0 +1,30 @@
+<div class="main-page">
+    <div class="container">
+        <h1 class="main-page-title">Главная</h1>
+        <div class="main-page-nav d-flex flex-row align-items-center">
+            <div class="main-page-nav-btn d-flex flex-wrap">
+                <button type="button" class="btn btn-outline-secondary">Сегодня</button>
+                <button type="button" class="btn btn-outline-secondary">Неделя</button>
+                <button type="button" class="btn btn-outline-secondary">Месяц</button>
+                <button type="button" class="btn btn-outline-secondary">Год</button>
+                <button type="button" class="btn btn-outline-secondary">Все</button>
+                <button type="button" class="btn btn-outline-secondary">Интервал</button>
+            </div>
+            <div class="main-page-nav-interval d-flex flex-nowrap">
+                c <a href="#" class="main-page-nav-interval-link my-main-page-interval-link">Дата</a>
+                по <a href="#" class="main-page-nav-interval-link">Дата</a>
+            </div>
+        </div>
+        <div class="main-page-charts">
+            <div class="main-page-chart main-page-chart1">
+                <div class="main-page-chart-title">Доходы</div>
+                <canvas id="myChart1"></canvas>
+            </div>
+            <div class="main-page-chart-line"></div>
+            <div class="main-page-chart">
+                <div class="main-page-chart-title">Расходы</div>
+                <canvas id="myChart2"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
