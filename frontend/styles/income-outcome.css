@@ -1,4 +1,15 @@
 /* Настройка таблицы*/
+.table-responsive-xxl {
+    margin-left: 60px;
+
+}
+
+@media screen and (max-width: 1024px) {
+    .table-responsive-xxl {
+        margin-left: 8px;
+    }
+}
+
 .table {
     margin-top: 30px;
     border-top: 1px solid #DEE2E6;

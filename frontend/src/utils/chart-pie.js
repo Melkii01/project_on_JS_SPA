@@ -7,7 +7,7 @@ export class ChartPie {
     labelsColor1 = ['#DC3545', '#FD7E14', '#FFC107', '#20C997', '#0D6EFD'];
 
     // Параметры второго пирога
-        partsPie2 = [411, 222, 333, 444, 155];
+    partsPie2 = [411, 222, 333, 444, 155];
     labels2 = ['Red', 'Orange', 'Yellow', 'Green', 'Blue'];
     labelsColor2 = ['#DC3545', '#FD7E14', '#FFC107', '#20C997', '#0D6EFD'];
 
@@ -74,3 +74,4 @@ export class ChartPie {
         });
     }
 }
+

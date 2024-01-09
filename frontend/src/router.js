@@ -6,6 +6,7 @@ import {Common} from "./components/common.js";
 
 export class Router {
     constructor() {
+        // Переменные
         this.authenticationElement = document.getElementById('authentication');
         this.mainElement = document.getElementById('main');
         this.contentElement = document.getElementById('content');
@@ -152,30 +153,32 @@ export class Router {
         let burgerClose = document.getElementById('burger-close');
 
         if (urlRoute === '#/login' || urlRoute === '#/signup') {
+            // Скрываем бургер и крестик
             burgerOpen.style.display = 'none';
             burgerClose.style.display = 'none';
 
+            // Построение страницы при логине или регистрации
             this.authenticationElement.innerHTML =
                 await fetch(newRoute.template).then(response => response.text());
             this.stylesElement.setAttribute('href', newRoute.styles);
             this.titleElement.innerText = newRoute.title;
             this.authenticationElement.style.display = 'flex';
             this.mainElement.style.display = 'none';
-            return;
         } else {
-            const screenWidth = window.screen.width;
-            if (screenWidth < 1024) {
-                burgerOpen.style.display = 'block';
-                this.mainElement.style.display = 'flex';
-
-            } else if (screenWidth < 1024){
-            }
-
+            // Построение страницы после авторизации
             this.contentElement.innerHTML =
                 await fetch(newRoute.template).then(response => response.text());
             this.stylesElement.setAttribute('href', newRoute.styles);
             this.titleElement.innerText = newRoute.title;
             this.authenticationElement.style.display = 'none';
+            this.mainElement.style.display = 'flex';
+
+            // Показываем бургер и главную страницу, если экран шириной меньше 1024
+            const screenWidth = window.screen.width;
+            if (screenWidth < 1024) {
+                burgerOpen.style.display = 'block';
+                this.mainElement.style.display = 'block';
+            }
         }
 
         // Как-то надо проверить авторизацию, если не авторизован скинуть на авторизацию

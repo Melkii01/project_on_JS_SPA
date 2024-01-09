@@ -79,13 +79,14 @@ a {
 
 .sidebar-menu {
     padding: 0 20px;
+    flex-grow: 1;
 }
 
-.sidebar-svg1 {
+.sidebar-svg-main{
     margin: 0 9px 5px 0;
 }
 
-.sidebar-svg2 {
+.sidebar-svg-income {
     margin: 0 9px 0 0;
 }
 
@@ -98,7 +99,7 @@ a {
     color: white;
 }
 
-.nav-item:hover .sidebar-svg1 path, .nav-item:hover .sidebar-svg2 path {
+.nav-item:hover .sidebar-svg-main path, .nav-item:hover .sidebar-svg-income path {
     fill: white;
 }
 
@@ -173,10 +174,10 @@ a {
     background-color: #0D6EFD;
     border-radius: 0;
 }
+
 .accordion-body-item2:hover {
     border-radius: 0 0 5px 5px;
 }
-
 
 
 /* Баланс в кошельке */
@@ -238,6 +239,16 @@ a {
 }
 
 /* Шаблон для навигации в правом окошке*/
+.main-page-nav {
+    margin-left: 60px;
+}
+
+@media screen and (max-width: 1024px) {
+    .main-page-nav {
+        margin-left: 8px;
+    }
+}
+
 .main-page-nav .btn {
     margin-right: 20px;
     width: 100px;
@@ -246,6 +257,7 @@ a {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
 
 .main-page-nav-interval {
     color: black;
@@ -267,7 +279,17 @@ a {
     color: #545a60;
 }
 
-/*Шаблон для странички доход/расход */
+@media screen and (max-width: 1231px) {
+    .main-page-nav-interval {
+        flex-direction: column;
+    }
+
+    .my-main-page-interval-link {
+        margin-right: 0;
+    }
+}
+
+/*Шаблон для главной страницы */
 .main {
     min-height: 100vh;
     display: flex;
@@ -296,8 +318,21 @@ a {
     font-size: 40px;
 }
 
+@media screen and (max-width: 1024px) {
+    .main-page-title {
+        padding: 100px 0 40px 8px;
+    }
+}
+
 .main-page-items {
     padding: 0 20px 60px 60px;
+}
+
+@media screen and (max-width: 1024px) {
+
+    .main-page-items {
+        padding: 0 20px 60px 8px;
+    }
 }
 
 .main-page-item {
@@ -322,6 +357,17 @@ a {
     font-family: 'RobotoBold', sans-serif;
     font-size: 28px;
     margin-bottom: 10px;
+}
+
+.main-page-item-options-create {
+    margin-left: 60px;
+}
+
+@media screen and (max-width: 1024px) {
+
+    .main-page-item-options-create {
+        margin-left: 8px;
+    }
 }
 
 .main-page-item-options {
