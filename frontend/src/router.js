@@ -1,5 +1,5 @@
-// import {Form} from "./components/form.js";
-// import {Auth} from "./services/auth.js";
+import {Form} from "./components/form.js";
+import {Auth} from "./services/auth.js";
 import {ChartPie} from "./utils/chart-pie.js";
 import {Common} from "./components/common.js";
 
@@ -13,7 +13,7 @@ export class Router {
         this.stylesElement = document.getElementById('styles');
         this.titleElement = document.getElementById('page-title');
         // this.profileElement = document.getElementById('profile');
-        // this.profilefullNameElement = document.getElementById('profile-full-name');
+        this.profilefullNameElement = document.getElementById('userName');
 
         this.routes = [
             {
@@ -31,7 +31,7 @@ export class Router {
                 template: 'templates/signup.html',
                 styles: 'styles/form.css',
                 load: () => {
-                    // new Form('signup');
+                    new Form('signup');
                 }
             },
             {
@@ -40,7 +40,7 @@ export class Router {
                 template: 'templates/login.html',
                 styles: 'styles/form.css',
                 load: () => {
-                    // new Form('login');
+                    new Form('login');
                 }
             },
             {
@@ -58,7 +58,7 @@ export class Router {
                 template: 'templates/income-create.html',
                 styles: 'styles/income-create.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -67,7 +67,7 @@ export class Router {
                 template: 'templates/income-edit.html',
                 styles: 'styles/income-edit.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -76,7 +76,7 @@ export class Router {
                 template: 'templates/outcome.html',
                 styles: 'styles/outcome.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -85,7 +85,7 @@ export class Router {
                 template: 'templates/outcome-create.html',
                 styles: 'styles/outcome-create.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -94,7 +94,7 @@ export class Router {
                 template: 'templates/outcome-edit.html',
                 styles: 'styles/outcome-edit.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -103,7 +103,7 @@ export class Router {
                 template: 'templates/income-outcome.html',
                 styles: 'styles/income-outcome.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -112,7 +112,7 @@ export class Router {
                 template: 'templates/income-outcome-create.html',
                 styles: 'styles/income-outcome-create.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -121,29 +121,31 @@ export class Router {
                 template: 'templates/income-outcome-edit.html',
                 styles: 'styles/income-outcome-edit.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
         ];
     }
 
     async openRoute() {
-
-        // Если выходим с акк
+        // URL адрес
         const urlRoute = window.location.hash.split('?')[0];
-        // if (urlRoute === '#/logout') {
-        //     Auth.logout();
-        //     window.location.href = '#/login';
-        //     return;
-        // }
+        console.log(urlRoute,'текущая страница');
+        // Если выходим с акк
+        if (urlRoute === '#/logout') {
+            Auth.logout();
+            window.location.href = '#/login';
+            return;
+        }
 
-        // Если в url совпадает имя страницы, сохраняет в переменной эту страницу
+        // Если в uRL совпадает имя страницы, сохраняет в переменной эту страницу
         const newRoute = this.routes.find(item => {
             return item.route === urlRoute;
         });
 
         // Если нет совпадений скидываем на главную страницу
         if (!newRoute) {
+            console.log('return to login, если пытаемся попасть на несуществующие странички')
             window.location.href = '#/';
             return;
         }
@@ -179,23 +181,23 @@ export class Router {
                 burgerOpen.style.display = 'block';
                 this.mainElement.style.display = 'block';
             }
-        }
 
-        // Как-то надо проверить авторизацию, если не авторизован скинуть на авторизацию
-        // const userInfo = Auth.getUserInfo();
-        // const accessToken = localStorage.getItem(Auth.accessTokenKey);
-        // if (userInfo && accessToken) {
-        //     this.profileElement.style.display = 'flex';
-        //     this.profilefullNameElement.innerText = userInfo.fullName;
-        // } else {
-        //     this.profileElement.style.display = 'none';
-        // }
+            // Если не авторизован перекидываем на login
+            const userInfo = Auth.getUserInfo();
+            const accessToken = localStorage.getItem(Auth.accessTokenKey);
+
+            if (userInfo && accessToken) {
+                this.profilefullNameElement.innerText = userInfo.name + ' ' + userInfo.lastName;
+            } else {
+                console.log('relocate to login, если не авторизованы');
+                window.location.href = '#/login';
+            }
+        }
 
         // Основные скрипты главных элементов
         new Common();
 
         // Загрузка скриптов страниц по url
         newRoute.load();
-
     }
 }
