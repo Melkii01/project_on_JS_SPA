@@ -15,7 +15,7 @@ export class Common {
             burgerOpen.style.display = 'none';
             burgerClose.style.display = 'block';
             sidebar.style.display = 'flex';
-            sidebar.style.position = 'absolute';
+            sidebar.style.position = 'fixed';
             sidebar.style.zIndex = '1111';
         }
 

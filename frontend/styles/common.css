@@ -38,6 +38,8 @@ a {
 @media screen and (max-width: 1024px) {
     #content {
         width: unset;
+        margin: 0 auto;
+        max-width: 90%;
     }
 }
 
