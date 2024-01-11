@@ -1,7 +1,7 @@
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
 import {ChartPie} from "./utils/chart-pie.js";
-import {Burger} from "./components/burger.js";
+import {Common} from "./components/common.js";
 
 
 export class Router {
@@ -21,7 +21,7 @@ export class Router {
                 title: 'Главная',
                 template: 'templates/index.html',
                 styles: 'styles/index.css',
-                load: () => {
+                load:  () => {
                     new ChartPie();
                 }
             },
@@ -194,8 +194,8 @@ export class Router {
             }
         }
 
-        // Скрипт для бургера, применяется везде
-        new Burger();
+        // Загрузка основных скриптов
+        new Common();
 
         // Загрузка скриптов страниц по url
         newRoute.load();
