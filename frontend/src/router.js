@@ -1,7 +1,7 @@
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
 import {ChartPie} from "./utils/chart-pie.js";
-import {Common} from "./components/common.js";
+import {Burger} from "./components/burger.js";
 
 
 export class Router {
@@ -146,7 +146,7 @@ export class Router {
         // Если нет совпадений скидываем на главную страницу
         if (!newRoute) {
             console.log('return to login, если пытаемся попасть на несуществующие странички')
-            window.location.href = '#/';
+            window.location.href = '#/login';
             return;
         }
 
@@ -179,7 +179,7 @@ export class Router {
             const screenWidth = window.screen.width;
             if (screenWidth < 1024) {
                 burgerOpen.style.display = 'block';
-                this.mainElement.style.display = 'block';
+                this.mainElement.style.display = 'flex';
             }
 
             // Если не авторизован перекидываем на login
@@ -194,8 +194,8 @@ export class Router {
             }
         }
 
-        // Основные скрипты главных элементов
-        new Common();
+        // Скрипт для бургера, применяется везде
+        new Burger();
 
         // Загрузка скриптов страниц по url
         newRoute.load();

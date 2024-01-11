@@ -6,6 +6,8 @@ export class Form {
     constructor(page) {
         this.formBtnElement = null;
         this.page = page;
+        this.formBtnElement = null;
+        this.passwordCheck = null;
 
         // Если токен есть, открываем главную страницу
         const accessToken = localStorage.getItem(Auth.accessTokenKey);
@@ -29,7 +31,7 @@ export class Form {
                 name: 'password',
                 id: 'password',
                 element: null,
-                regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+                regex: /.*/,
                 valid: false,
             },
         ];
@@ -41,7 +43,7 @@ export class Form {
                     name: 'name',
                     id: 'name',
                     element: null,
-                    regex: /^[A-ЯЁ][а-яё]+\s[A-ЯЁ][а-яё]+$/,
+                    regex: /^[A-ЯЁ][а-яё]+\s[A-ЯЁ][а-яё]+(\s[A-ЯЁ][а-яё]+)?$/,
                     valid: false,
                 },
                 {
@@ -63,7 +65,7 @@ export class Form {
                     name: 'passwordRepeat',
                     id: 'passwordRepeat',
                     element: null,
-                    regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/,
+                    regex: /.*/,
                     valid: false,
                 }
             ];
@@ -74,41 +76,68 @@ export class Form {
 
         this.fields.forEach(item => {
             item.element = document.getElementById(item.id);
-            // ...изменении
+
             item.element.onchange = function () {
-                console.log('input change, при изменении инпута запуск проверки');
                 that.validateField.call(that, item, this);
             }
-
         });
 
         //  При клике запускаем progressForm
         this.formBtnElement = document.getElementById('form-btn');
 
         this.formBtnElement.onclick = function () {
-            console.log('from btn, клик по кнопке');
+            console.log('form btn, клик по кнопке');
             that.progressForm();
         };
     }
 
     // Проверяем на правильность ввода, красим бордер на красный или убираем, запускаем validateForm
     validateField(field, element) {
-        console.log('validateField, если не правильно то красим и наоборот');
+
         if (!element.value || !element.value.match(field.regex)) {
+            console.log('validateField, красим в красный');
             element.parentNode.style.border = '2px solid red';
             element.parentNode.style.borderRadius = '6px';
             field.valid = false;
         } else {
+            console.log('validateField, все хорошо');
             element.parentNode.removeAttribute('style');
             field.valid = true;
         }
+
+        // Записываем пароль в переменную passwordCheck
+        if (field.name === 'password') {
+            this.passwordCheck = element.value;
+        }
+        // Проверяем если passwordCheck не совпадает с повтором пароля, красим в красный
+        if (field.name === 'passwordRepeat') {
+            if (element.value !== this.passwordCheck) {
+                console.log('Пароли не совпадают')
+                element.parentNode.style.border = '2px solid red';
+                element.parentNode.style.borderRadius = '6px';
+                field.valid = false;
+            } else {
+                console.log('Пароли совпадают')
+                element.parentNode.removeAttribute('style');
+                field.valid = true;
+            }
+        }
+
         this.validateForm();
     }
 
     // Возвращаем true или false
     validateForm() {
-        console.log('validateForm, отмечаем на валидность');
-        return this.fields.every(item => item.valid);
+        console.log('validateForm, возврат тру - не тру');
+        const validForm = this.fields.every(item => item.valid);
+
+        // Разблокируем кнопку если валидация верна
+        if (validForm) {
+            this.formBtnElement.removeAttribute('disabled');
+        } else {
+            this.formBtnElement.setAttribute('disabled', 'disabled');
+        }
+        return validForm;
     }
 
     // Отправка формы, регистрация, запись токена сессии
@@ -118,13 +147,11 @@ export class Form {
             const email = this.fields.find(item => item.name === 'email').element.value;
             const password = this.fields.find(item => item.name === 'password').element.value;
             let rememberMe = true;
-
-
+            let errorMessage = document.getElementById('error-message');
             if (this.page === 'signup') {
-                console.log('progress signup');
 
+                console.log('progress запуск signup');
                 const passwordRepeat = this.fields.find(item => item.name === 'passwordRepeat').element.value;
-                console.log(passwordRepeat);
                 try {
                     const result = await CustomHttp.request(config.host + '/signup', 'POST', {
                             name: this.fields.find(item => item.name === 'name').element.value.split(' ')[0],
@@ -134,14 +161,19 @@ export class Form {
                             passwordRepeat: passwordRepeat
                         }
                     );
-                    console.log(result)
+                    console.log(result, 'signup')
 
                     if (result) {
                         if (result.error || !result.user) {
+                            errorMessage.style.display = 'block';
                             throw new Error(result.message);
                         }
+                    } else {
+                        errorMessage.style.display = 'block';
+                        throw new Error(result.message);
                     }
                 } catch (e) {
+                    errorMessage.style.display = 'block';
                     return console.log(e);
                 }
             }
@@ -150,7 +182,7 @@ export class Form {
                 rememberMe = document.getElementById('formCheck').checked;
             }
 
-            console.log('progress login');
+            console.log('progress запуск login');
             try {
                 const result = await CustomHttp.request(config.host + '/login', 'POST', {
                         email: email,
@@ -158,23 +190,27 @@ export class Form {
                         rememberMe: rememberMe
                     }
                 );
-                console.log(result)
+                console.log(result, 'login')
                 if (result) {
-                    if (result.error || result.message || !result.user || !result.tokens.accessToken
-                        || !result.tokens.refreshToken) {
+                    if (result.error || result.message) {
+                        errorMessage.style.display = 'block';
                         throw new Error(result.message);
+                    } else {
+                        Auth.setTokens(result.tokens.accessToken, result.tokens.refreshToken);
+                        Auth.setUserInfo({
+                            name: result.user.name,
+                            lastName: result.user.lastName,
+                            userId: result.user.id
+                        })
+                        location.href = '#/';
                     }
-
-                    Auth.setTokens(result.tokens.accessToken, result.tokens.refreshToken);
-                    Auth.setUserInfo({
-                        name: result.user.name,
-                        lastName: result.user.lastName,
-                        userId: result.user.id
-                    })
-                    location.href = '#/';
+                } else {
+                    errorMessage.style.display = 'block';
+                    throw new Error(result.message);
                 }
             } catch (e) {
-                console.log(e);
+                errorMessage.style.display = 'block';
+                return console.log(e);
             }
         }
     }

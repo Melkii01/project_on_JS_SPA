@@ -54,8 +54,15 @@
         </span>
         <input type="password" class="form-control" placeholder="Подтверждение пароля" id="passwordRepeat">
     </div>
-
-    <button type="button" class="btn btn-primary w-100 mb-2" id="form-btn">Войти</button>
+    <div class="error-message" id="error-message">
+        Произошла ошибка!
+        <p class="error-message-text">
+            - ФИО - только латиница и пробелы. Слова с большой буквы <br>
+            - email должен быть корректным <br>
+            - пароль должен быть не менее 8 символов, содержать 1 букву в верхнем регистре и 1 цифру <br>
+            - пароли должны совпадать</p>
+    </div>
+    <button type="button" class="btn btn-primary w-100 mb-2" id="form-btn" disabled>Войти</button>
     <div class="form-link align-self-start mb-5">Уже есть аккаунт? <a href="#/login">Войдите в систему</a></div>
 </form>
 

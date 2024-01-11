@@ -45,3 +45,17 @@
         padding: 10px;
     }
 }
+
+.error-message {
+    text-align: center;
+    font-family: 'RobotoBold', sans-serif;
+    color: red;
+    display: none;
+    width: 100%;
+}
+
+.error-message-text {
+    font-family: 'Roboto', sans-serif;
+    text-align: left;
+    font-size: 12px;
+}

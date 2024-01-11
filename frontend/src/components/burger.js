@@ -1,4 +1,4 @@
-export class Common {
+export class Burger {
     constructor() {
         this.Burger();
     }
@@ -9,6 +9,19 @@ export class Common {
         let burgerClose = document.getElementById('burger-close');
         let sidebar = document.getElementById('sidebar');
         let main = document.getElementById('content');
+
+        // Слушаем ширину, показываем бургер и сайдбар, или убираем
+        let screenWidth = window.screen.width;
+        window.addEventListener("resize", () => {
+            screenWidth = window.screen.width;
+            if (screenWidth < 1024) {
+                burgerOpen.style.display = 'block';
+                sidebar.style.display = 'none';
+            } else {
+                burgerOpen.style.display = 'none';
+                sidebar.style.display = 'flex';
+            }
+        });
 
         // При клике на бургер открывается меню
         burgerOpen.onclick = () => {
@@ -28,7 +41,6 @@ export class Common {
         }
 
         // При клике вне меню закрывается меню
-        const screenWidth = window.screen.width;
         main.onclick = () => {
             if (screenWidth < 1024 && sidebar.style.display === 'flex') {
                 burgerOpen.style.display = 'block';
