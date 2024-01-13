@@ -147,7 +147,7 @@ export class Form {
             const email = this.fields.find(item => item.name === 'email').element.value;
             const password = this.fields.find(item => item.name === 'password').element.value;
             let rememberMe = true;
-            let errorMessage = document.getElementById('error-message');
+            const errorMessage = document.getElementById('error-message');
             if (this.page === 'signup') {
 
                 console.log('progress запуск signup');

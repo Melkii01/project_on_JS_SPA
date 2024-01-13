@@ -1,7 +1,11 @@
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
 import {ChartPie} from "./utils/chart-pie.js";
-import {Common} from "./components/common.js";
+import {Burger} from "./components/burger.js";
+import {Balance} from "./components/balance.js";
+import {Income} from "./components/income.js";
+import {IncomeCreate} from "./components/income-create.js";
+import {IncomeEdit} from "./components/income-edit";
 
 
 export class Router {
@@ -21,7 +25,7 @@ export class Router {
                 title: 'Главная',
                 template: 'templates/index.html',
                 styles: 'styles/index.css',
-                load:  () => {
+                load: () => {
                     new ChartPie();
                 }
             },
@@ -49,7 +53,7 @@ export class Router {
                 template: 'templates/income.html',
                 styles: 'styles/income.css',
                 load: () => {
-                    // new Choice();
+                    new Income();
                 }
             },
             {
@@ -58,7 +62,7 @@ export class Router {
                 template: 'templates/income-create.html',
                 styles: 'styles/income-create.css',
                 load: () => {
-                    // new ();
+                    new IncomeCreate();
                 }
             },
             {
@@ -67,7 +71,6 @@ export class Router {
                 template: 'templates/income-edit.html',
                 styles: 'styles/income-edit.css',
                 load: () => {
-                    // new ();
                 }
             },
             {
@@ -130,7 +133,7 @@ export class Router {
     async openRoute() {
         // URL адрес
         const urlRoute = window.location.hash.split('?')[0];
-        console.log(urlRoute,'текущая страница');
+        console.log(urlRoute, 'текущая страница');
         // Если выходим с акк
         if (urlRoute === '#/logout') {
             Auth.logout();
@@ -188,14 +191,19 @@ export class Router {
 
             if (userInfo && accessToken) {
                 this.profilefullNameElement.innerText = userInfo.name + ' ' + userInfo.lastName;
+                // Загрузка баланса
+                new Balance();
             } else {
                 console.log('relocate to login, если не авторизованы');
+                if (userInfo) {
+                    localStorage.removeItem(Auth.userInfoKey)
+                }
                 window.location.href = '#/login';
             }
         }
 
         // Загрузка основных скриптов
-        new Common();
+        new Burger();
 
         // Загрузка скриптов страниц по url
         newRoute.load();
