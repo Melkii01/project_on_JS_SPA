@@ -1,30 +1,29 @@
 import config from "../../config/config.js";
 import {CustomHttp} from "../services/custom-http.js";
-import {IncomeEdit} from "./income-edit.js";
-import {IncomeCreate} from "./income-create.js";
+import {BudgetEdit} from "./budget-edit.js";
+import {BudgetCreate} from "./budget-create.js";
 import {Popup} from "../utils/popup.js";
 
-export class Income {
-    incomeDataFromServer = null;
+export class Budget {
+    DataFromServer = null;
     urlRoute = window.location.hash.split('?')[0];
 
-
     constructor() {
-        this.getIncomeData();
+        this.getBudgetData();
     }
 
-    // Получаем данные по доходам
-    async getIncomeData() {
+    // Получаем данные по urlRoute
+    async getBudgetData() {
         try {
-            const result = await CustomHttp.request(config.host + '/categories/income');
+            const result = await CustomHttp.request(config.host + '/categories/' + this.urlRoute.split('/')[1]);
 
             if (result) {
                 if (result.error || result.message) {
                     throw new Error(result.message);
                 } else {
                     // Сохраняем результат в переменную
-                    this.incomeDataFromServer = result;
-                    this.showIncomeData();
+                    this.DataFromServer = result;
+                    this.showBudgetData();
                     return
                 }
             } else {
@@ -36,18 +35,21 @@ export class Income {
         }
     }
 
-    // Показываем на странице доходы
-    async showIncomeData() {
-        // Строим блоки на странице income
+    // Показываем на странице данные
+    async showBudgetData() {
+        // Строим блоки на странице urlRoute
         // Меняем заглавление
         const mainPageTitle = document.getElementById('mainPageTitle');
         mainPageTitle.innerText = 'Доходы';
+        if (this.urlRoute === '#/expense') {
+            mainPageTitle.innerText = 'Расходы';
+        }
         // Чистим страницу
         const mainPageItemsElement = document.getElementById('mainPageItems');
         mainPageItemsElement.innerHTML = '';
 
 
-        this.incomeDataFromServer.forEach(items => {
+        this.DataFromServer.forEach(items => {
             // Создаем блок с данными
             const mainPageItemElement = document.createElement('div');
             mainPageItemElement.className = 'main-page-item col-3';
@@ -70,7 +72,7 @@ export class Income {
             mainPageItemOptionEditElement.className = 'main-page-item-options-edit btn btn-primary me-2';
             mainPageItemOptionEditElement.innerText = 'Редактировать';
             mainPageItemOptionEditElement.onclick = () => {
-                new IncomeEdit(items.id);
+                new BudgetEdit(items.id);
             };
             mainPageItemOptionsElement.appendChild(mainPageItemOptionEditElement);
 
@@ -79,9 +81,14 @@ export class Income {
             mainPageItemOptionDeleteElement.className = 'main-page-item-options-delete btn btn-danger';
             mainPageItemOptionDeleteElement.innerText = 'Удалить';
             mainPageItemOptionDeleteElement.onclick = async () => {
-                new Popup('Вы действительно хотите удалить категорию? Связанные доходы будут удалены навсегда.',
-                    this.urlRoute, items.id);
-            };
+                if (this.urlRoute === '#/income') {
+                    new Popup('Вы действительно хотите удалить категорию? Связанные доходы будут удалены навсегда.',
+                        this.urlRoute, items.id);
+                } else if (this.urlRoute === '#/expense') {
+                    new Popup('Вы действительно хотите удалить категорию? Связанные расходы будут удалены навсегда.',
+                        this.urlRoute, items.id);
+                }
+            }
             mainPageItemOptionsElement.appendChild(mainPageItemOptionDeleteElement);
         })
 
@@ -90,10 +97,9 @@ export class Income {
         const mainPageItemLinkElement = document.createElement('a');
         mainPageItemLinkElement.className = 'main-page-item main-page-item-link col-3';
         mainPageItemLinkElement.addEventListener('click', () => {
-            new IncomeCreate();
+            new BudgetCreate();
         });
         mainPageItemsElement.appendChild(mainPageItemLinkElement);
-        // По клику на блок добавлять данные
 
         // Название и кнопки блока нужны, иначе блок будет отличаться от других
         // Создаем название данного блока

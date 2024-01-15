@@ -3,9 +3,7 @@ import {Auth} from "./services/auth.js";
 import {ChartPie} from "./utils/chart-pie.js";
 import {Burger} from "./components/burger.js";
 import {Balance} from "./components/balance.js";
-import {Income} from "./components/income.js";
-import {IncomeCreate} from "./components/income-create.js";
-import {IncomeEdit} from "./components/income-edit";
+import {Budget} from "./components/budget.js";
 
 
 export class Router {
@@ -16,7 +14,6 @@ export class Router {
         this.contentElement = document.getElementById('content');
         this.stylesElement = document.getElementById('styles');
         this.titleElement = document.getElementById('page-title');
-        // this.profileElement = document.getElementById('profile');
         this.profilefullNameElement = document.getElementById('userName');
 
         this.routes = [
@@ -53,51 +50,16 @@ export class Router {
                 template: 'templates/income.html',
                 styles: 'styles/income.css',
                 load: () => {
-                    new Income();
+                    new Budget();
                 }
             },
-            // {
-            //     route: '#/income-create',
-            //     title: 'Создать доход',
-            //     template: 'templates/income-create.html',
-            //     styles: 'styles/income-create.css',
-            //     load: () => {
-            //         new IncomeCreate();
-            //     }
-            // },
-            // {
-            //     route: '#/income-edit',
-            //     title: 'Редактировать доход',
-            //     template: 'templates/income-edit.html',
-            //     styles: 'styles/income-edit.css',
-            //     load: () => {
-            //     }
-            // },
             {
-                route: '#/outcome',
+                route: '#/expense',
                 title: 'Расход',
-                template: 'templates/outcome.html',
-                styles: 'styles/outcome.css',
+                template: 'templates/expense.html',
+                styles: 'styles/expense.css',
                 load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/outcome-create',
-                title: 'Создать расход',
-                template: 'templates/outcome-create.html',
-                styles: 'styles/outcome-create.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/outcome-edit',
-                title: 'Редактировать расход',
-                template: 'templates/outcome-edit.html',
-                styles: 'styles/outcome-edit.css',
-                load: () => {
-                    // new ();
+                    new Budget();
                 }
             },
             {

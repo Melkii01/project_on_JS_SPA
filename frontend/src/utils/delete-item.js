@@ -5,10 +5,11 @@ export class DeleteItem {
     constructor(urlRoute, itemId) {
         this.urlRoute = urlRoute.split('/')[1];
         this.itemId = itemId;
+
         this.delete();
-        console.log(this.urlRoute)
     }
 
+    // Удалить доход или расход
     async delete() {
         try {
             const result = await CustomHttp.request(
@@ -20,7 +21,7 @@ export class DeleteItem {
                     throw new Error(result.message);
 
                 } else {
-                    // Успешно, возвращаемся в откуда пришли
+                    // Успешно, возвращаемся откуда пришли
                     location.href = '#/' + this.urlRoute;
                 }
             } else {

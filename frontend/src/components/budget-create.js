@@ -1,14 +1,16 @@
 import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
 
-export class IncomeCreate {
+export class BudgetCreate {
+    urlRoute = window.location.hash.split('?')[0];
+
     constructor() {
-        this.showIncomeCreate();
+        this.showBudgetCreate();
     }
 
-    // Показываем создание дохода
-    showIncomeCreate() {
-        // Строим блоки на странице income
+    // Показываем создание данных
+    showBudgetCreate() {
+        // Строим блоки на странице urlRoute
 
         // Чистим страницу
         const mainPageItemsElement = document.getElementById('mainPageItems');
@@ -17,13 +19,16 @@ export class IncomeCreate {
         // Меняем заглавление
         const mainPageTitle = document.getElementById('mainPageTitle');
         mainPageTitle.innerText = 'Создание категории доходов';
+        if (this.urlRoute === '#/expense') {
+            mainPageTitle.innerText = 'Создание категории расходов';
+        }
 
         // Создаем инпут
         const mainPageItemsInput = document.createElement('input');
         mainPageItemsInput.className = 'main-page-items-input';
         mainPageItemsInput.setAttribute('type', 'text');
         mainPageItemsInput.setAttribute('placeholder', 'Название...');
-        mainPageItemsInput.setAttribute('id', 'incomeCreateInput');
+        mainPageItemsInput.setAttribute('id', 'createInput');
         mainPageItemsInput.setAttribute('required', 'required');
         mainPageItemsElement.appendChild(mainPageItemsInput);
 
@@ -37,6 +42,9 @@ export class IncomeCreate {
         const errorMessageText = document.createElement('p');
         errorMessageText.className = 'error-message-text';
         errorMessageText.innerText = '- Такой доход уже есть!';
+        if (this.urlRoute === '#/expense') {
+            errorMessageText.innerText = '- Такой расход уже есть!';
+        }
         errorMessage.appendChild(errorMessageText);
 
         // Создаем див кнопок
@@ -48,44 +56,45 @@ export class IncomeCreate {
         const mainPageItemOptionCreateElement = document.createElement('button');
         mainPageItemOptionCreateElement.className = 'main-page-item-options-edit btn btn-success me-2';
         mainPageItemOptionCreateElement.innerText = 'Создать';
-        mainPageItemOptionCreateElement.setAttribute('id', 'incomeCreateAgreeButton');
+        mainPageItemOptionCreateElement.setAttribute('id', 'createAgreeButton');
         mainPageItemOptions.appendChild(mainPageItemOptionCreateElement);
-        // по клику запускать функцию edit
 
         // Кнопка отмена
         const mainPageItemOptionDeleteElement = document.createElement('button');
         mainPageItemOptionDeleteElement.className = 'main-page-item-options-delete btn btn-danger';
         mainPageItemOptionDeleteElement.innerText = 'Отмена';
-        mainPageItemOptionDeleteElement.setAttribute('id', 'incomeCreateCancelButton');
+        mainPageItemOptionDeleteElement.setAttribute('id', 'createCancelButton');
         mainPageItemOptionDeleteElement.onclick = () => {
-            location.href = '#/income';
+            location.href = this.urlRoute;
         };
         mainPageItemOptions.appendChild(mainPageItemOptionDeleteElement);
-        this.sendIncomeCreate();
+        this.sendCreate();
     }
 
-    // Создаем новый доход
-    sendIncomeCreate() {
-        const incomeCreateInput = document.getElementById('incomeCreateInput');
-        const incomeCreateAgreeButton = document.getElementById('incomeCreateAgreeButton');
-        const incomeCreateCancelButton = document.getElementById('incomeCreateCancelButton');
+    // Создаем новое данное
+    sendCreate() {
+        const createInput = document.getElementById('createInput');
+        const createAgreeButton = document.getElementById('createAgreeButton');
+        const createCancelButton = document.getElementById('createCancelButton');
         let errorMessage = document.getElementById('errorMessage');
 
-        incomeCreateAgreeButton.onclick = async (e) => {
-            if (incomeCreateInput.value) {
+        createAgreeButton.onclick = async (e) => {
+            if (createInput.value) {
                 try {
-                    const result = await CustomHttp.request(config.host + '/categories/income', 'POST', {
-                        title: incomeCreateInput.value
-                    });
+                    const result = await CustomHttp.request(config.host + '/categories/' + this.urlRoute.split('/')[1],
+                        'POST',
+                        {
+                            title:createInput.value
+                        });
 
                     if (result) {
                         if (result.error || result.message) {
                             errorMessage.style.display = 'flex';
                             throw new Error(result.message);
                         } else {
-                            // Успешно, возвращаемся в доходы
+                            // Успешно, возвращаемся в данные
                             errorMessage.style.display = 'none';
-                            location.href = '#/income';
+                            location.href = this.urlRoute;
                         }
                     } else {
                         throw new Error(result.message);
@@ -96,8 +105,8 @@ export class IncomeCreate {
                 }
             }
         }
-        incomeCreateCancelButton.onclick = () => {
-            location.href = '#/income';
+        createCancelButton.onclick = () => {
+            location.href = this.urlRoute;
         }
     }
 }

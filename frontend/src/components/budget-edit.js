@@ -1,38 +1,40 @@
 import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
 
-export class IncomeEdit {
-    incomeId = null;
+export class BudgetEdit {
+    urlRoute = window.location.hash.split('?')[0];
+    itemId = null;
+    inputValue = null;
 
     constructor(itemId) {
-        this.incomeId = itemId;
-        this.getIncomeEditData();
+        this.itemId = itemId;
+        this.getEditData();
     }
 
-    // Достаем название выбранного дохода
-    async getIncomeEditData() {
+    // Достаем название выбранного данного
+    async getEditData() {
         try {
-            const result = await CustomHttp.request(config.host + '/categories/income/' + this.incomeId);
-
+            const result = await CustomHttp.request(config.host + '/categories/' +
+                this.urlRoute.split('/')[1] + '/' + this.itemId);
+            console.log(result)
             if (result) {
                 if (result.error || result.message) {
-
+                    throw new Error(result.message);
                 } else {
                     this.inputValue = result.title;
-                    this.showIncomeEdit();
+                    this.showEdit();
                 }
             } else {
                 throw new Error(result.message);
             }
-
         } catch (e) {
             return console.log(e);
         }
     }
 
-    // Показываем создание дохода
-    showIncomeEdit() {
-        // Строим блоки на странице income
+    // Показываем создание данной
+    showEdit() {
+        // Строим блоки на странице urlRoute
 
         // Чистим страницу
         const mainPageItemsElement = document.getElementById('mainPageItems');
@@ -41,13 +43,16 @@ export class IncomeEdit {
         // Меняем заглавление
         const mainPageTitle = document.getElementById('mainPageTitle');
         mainPageTitle.innerText = 'Редактирование категории доходов';
+        if (this.urlRoute === '#/expense') {
+            mainPageTitle.innerText = 'Редактирование категории расходов';
+        }
 
         // Создаем инпут
         const mainPageItemsInput = document.createElement('input');
         mainPageItemsInput.className = 'main-page-items-input';
         mainPageItemsInput.setAttribute('type', 'text');
         mainPageItemsInput.setAttribute('placeholder', this.inputValue);
-        mainPageItemsInput.setAttribute('id', 'incomeEditInput');
+        mainPageItemsInput.setAttribute('id', 'editInput');
         mainPageItemsElement.appendChild(mainPageItemsInput);
 
         // Создаем скрытый блок
@@ -71,34 +76,37 @@ export class IncomeEdit {
         const mainPageItemOptionCreateElement = document.createElement('button');
         mainPageItemOptionCreateElement.className = 'main-page-item-options-edit btn btn-success me-2';
         mainPageItemOptionCreateElement.innerText = 'Сохранить';
-        mainPageItemOptionCreateElement.setAttribute('id', 'incomeEditAgreeButton');
+        mainPageItemOptionCreateElement.setAttribute('id', 'editAgreeButton');
         mainPageItemOptions.appendChild(mainPageItemOptionCreateElement);
-        // по клику запускать функцию edit
+
 
         // Кнопка отмена
         const mainPageItemOptionDeleteElement = document.createElement('button');
         mainPageItemOptionDeleteElement.className = 'main-page-item-options-delete btn btn-danger';
         mainPageItemOptionDeleteElement.innerText = 'Отмена';
-        mainPageItemOptionDeleteElement.setAttribute('id', 'incomeEditCancelButton');
+        mainPageItemOptionDeleteElement.setAttribute('id', 'editCancelButton');
         mainPageItemOptions.appendChild(mainPageItemOptionDeleteElement);
 
         // Запуск функции для готовности
-        this.sendIncomeEdit();
+        this.sendEdit();
     }
 
     // Отправка данных по клику
-    sendIncomeEdit() {
-        const incomeEditInput = document.getElementById('incomeEditInput');
-        incomeEditInput.value = this.inputValue;
-        const incomeEditAgreeButton = document.getElementById('incomeEditAgreeButton');
-        const incomeEditCancelButton = document.getElementById('incomeEditCancelButton');
+    sendEdit() {
+        const editInput = document.getElementById('editInput');
+        editInput.value = this.inputValue;
+        const editAgreeButton = document.getElementById('editAgreeButton');
+        const editCancelButton = document.getElementById('editCancelButton');
         const errorMessage = document.getElementById('errorMessage');
 
-        incomeEditAgreeButton.onclick = async (e) => {
-            if (incomeEditInput.value) {
+        editAgreeButton.onclick = async (e) => {
+            if (editInput.value) {
                 try {
-                    const result = await CustomHttp.request(config.host + '/categories/income/' + this.incomeId, 'PUT', {
-                        title: incomeEditInput.value
+                    console.log(config.host + '/categories/' + this.urlRoute.split('/')[1] + '/' + this.itemId)
+
+                    const result = await CustomHttp.request(config.host + '/categories/' +
+                        this.urlRoute.split('/')[1] + '/' + this.itemId, 'PUT', {
+                        title: editInput.value
                     });
                     if (result && (result.title !== this.inputValue)) {
                         if (result.error || result.message) {
@@ -107,7 +115,7 @@ export class IncomeEdit {
                         } else {
                             // Успешно, возвращаемся в доходы
                             errorMessage.style.display = 'none';
-                            location.href = '#/income';
+                            location.href = this.urlRoute;
                         }
                     } else {
                         errorMessage.style.display = 'flex';
@@ -119,8 +127,8 @@ export class IncomeEdit {
                 }
             }
         }
-        incomeEditCancelButton.onclick = () => {
-            location.href = '#/income';
+        editCancelButton.onclick = () => {
+            location.href = this.urlRoute
         }
     }
 }
