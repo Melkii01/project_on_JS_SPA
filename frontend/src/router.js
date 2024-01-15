@@ -56,23 +56,23 @@ export class Router {
                     new Income();
                 }
             },
-            {
-                route: '#/income-create',
-                title: 'Создать доход',
-                template: 'templates/income-create.html',
-                styles: 'styles/income-create.css',
-                load: () => {
-                    new IncomeCreate();
-                }
-            },
-            {
-                route: '#/income-edit',
-                title: 'Редактировать доход',
-                template: 'templates/income-edit.html',
-                styles: 'styles/income-edit.css',
-                load: () => {
-                }
-            },
+            // {
+            //     route: '#/income-create',
+            //     title: 'Создать доход',
+            //     template: 'templates/income-create.html',
+            //     styles: 'styles/income-create.css',
+            //     load: () => {
+            //         new IncomeCreate();
+            //     }
+            // },
+            // {
+            //     route: '#/income-edit',
+            //     title: 'Редактировать доход',
+            //     template: 'templates/income-edit.html',
+            //     styles: 'styles/income-edit.css',
+            //     load: () => {
+            //     }
+            // },
             {
                 route: '#/outcome',
                 title: 'Расход',

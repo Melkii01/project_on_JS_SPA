@@ -1,6 +1,3 @@
-import {CustomHttp} from "../services/custom-http.js";
-import config from "../../config/config.js";
-
 export class Burger {
     constructor() {
         this.Burger();
@@ -66,5 +63,4 @@ export class Burger {
             }
         }
     }
-
 }
