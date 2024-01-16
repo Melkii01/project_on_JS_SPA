@@ -1,7 +1,7 @@
 import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
 import {Popup} from "../utils/popup";
-import {DeleteItem} from "../utils/delete-item";
+import {DeleteCategory} from "../utils/delete";
 
 export class Balance {
     constructor() {

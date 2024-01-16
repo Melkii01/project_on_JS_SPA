@@ -4,7 +4,7 @@ import {ChartPie} from "./utils/chart-pie.js";
 import {Burger} from "./components/burger.js";
 import {Balance} from "./components/balance.js";
 import {Budget} from "./components/budget.js";
-import {IncomeExpense} from "./components/income-expense.js";
+import {Operations} from "./components/operations.js";
 
 
 export class Router {
@@ -64,30 +64,12 @@ export class Router {
                 }
             },
             {
-                route: '#/income-expense',
+                route: '#/operations',
                 title: 'Доходы и расходы',
-                template: 'templates/income-expense.html',
-                styles: 'styles/income-expense.css',
+                template: 'templates/operations.html',
+                styles: 'styles/operations.css',
                 load:  () => {
-                    new IncomeExpense();
-                }
-            },
-            {
-                route: '#/income-outcome-create',
-                title: 'Создать доход/расход',
-                template: 'templates/income-outcome-create.html',
-                styles: 'styles/income-outcome-create.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/income-outcome-edit',
-                title: 'Редактирование дохода/расхода',
-                template: 'templates/income-outcome-edit.html',
-                styles: 'styles/income-outcome-edit.css',
-                load: () => {
-                    // new ();
+                    new Operations();
                 }
             },
         ];

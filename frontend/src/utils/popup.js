@@ -1,4 +1,4 @@
-import {DeleteItem} from "./delete-item.js";
+import {Delete} from "./delete.js";
 
 export class Popup {
     constructor(text,urlRoute,itemId) {
@@ -22,7 +22,7 @@ export class Popup {
         // При подтверждении закрыть окно и отправить на удаление
         popupAgreeButton.onclick = () => {
             popup.classList.remove('popup-active');
-            new DeleteItem(this.urlRoute,this.itemId);
+            new Delete(this.urlRoute,this.itemId);
         }
 
         // При отказе закрыть окно
