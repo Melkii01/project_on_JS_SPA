@@ -36,7 +36,11 @@
             Запомнить меня
         </label>
     </div>
-    <button class="button btn btn-primary w-100 mb-2" type="submit">Войти</button>
-    <div class="form-link align-self-start mb-5">Ещё нет аккаунта? <a href="/#/signup">Пройдите регистрацию</a></div>
+    <div class="error-message" id="error-message">
+        Произошла ошибка!
+        <p class="error-message-text">- Неверный логин или пароль</p>
+    </div>
+    <button type="button" class="btn btn-primary w-100 mb-2" id="form-btn" disabled>Войти</button>
+    <div class="form-link align-self-start mb-5">Ещё нет аккаунта? <a href="#/signup">Пройдите регистрацию</a></div>
 </form>
 

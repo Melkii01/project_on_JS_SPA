@@ -1,7 +1,7 @@
-// import {Form} from "./components/form.js";
-// import {Auth} from "./services/auth.js";
+import {Form} from "./components/form.js";
+import {Auth} from "./services/auth.js";
 import {ChartPie} from "./utils/chart-pie.js";
-import {Common} from "./components/common.js";
+import {Burger} from "./components/burger.js";
 
 
 export class Router {
@@ -12,8 +12,7 @@ export class Router {
         this.contentElement = document.getElementById('content');
         this.stylesElement = document.getElementById('styles');
         this.titleElement = document.getElementById('page-title');
-        // this.profileElement = document.getElementById('profile');
-        // this.profilefullNameElement = document.getElementById('profile-full-name');
+        this.profilefullNameElement = document.getElementById('userName');
 
         this.routes = [
             {
@@ -31,7 +30,7 @@ export class Router {
                 template: 'templates/signup.html',
                 styles: 'styles/form.css',
                 load: () => {
-                    // new Form('signup');
+                    new Form('signup');
                 }
             },
             {
@@ -40,7 +39,7 @@ export class Router {
                 template: 'templates/login.html',
                 styles: 'styles/form.css',
                 load: () => {
-                    // new Form('login');
+                    new Form('login');
                 }
             },
             {
@@ -58,7 +57,7 @@ export class Router {
                 template: 'templates/income-create.html',
                 styles: 'styles/income-create.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -67,7 +66,7 @@ export class Router {
                 template: 'templates/income-edit.html',
                 styles: 'styles/income-edit.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -76,7 +75,7 @@ export class Router {
                 template: 'templates/outcome.html',
                 styles: 'styles/outcome.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -85,7 +84,7 @@ export class Router {
                 template: 'templates/outcome-create.html',
                 styles: 'styles/outcome-create.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -94,7 +93,7 @@ export class Router {
                 template: 'templates/outcome-edit.html',
                 styles: 'styles/outcome-edit.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -103,7 +102,7 @@ export class Router {
                 template: 'templates/income-outcome.html',
                 styles: 'styles/income-outcome.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -112,7 +111,7 @@ export class Router {
                 template: 'templates/income-outcome-create.html',
                 styles: 'styles/income-outcome-create.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
             {
@@ -121,42 +120,34 @@ export class Router {
                 template: 'templates/income-outcome-edit.html',
                 styles: 'styles/income-outcome-edit.css',
                 load: () => {
-                    // new Choice();
+                    // new ();
                 }
             },
         ];
     }
 
     async openRoute() {
-
-        // Если выходим с акк
+        // URL адрес
         const urlRoute = window.location.hash.split('?')[0];
-        // if (urlRoute === '#/logout') {
-        //     Auth.logout();
-        //     window.location.href = '#/login';
-        //     return;
-        // }
+        // Если выходим с акк
+        if (urlRoute === '#/logout') {
+            Auth.logout();
+            window.location.href = '#/login';
+            return;
+        }
 
-        // Если в url совпадает имя страницы, сохраняет в переменной эту страницу
+        // Если в uRL совпадает имя страницы, сохраняет в переменной эту страницу
         const newRoute = this.routes.find(item => {
             return item.route === urlRoute;
         });
 
         // Если нет совпадений скидываем на главную страницу
         if (!newRoute) {
-            window.location.href = '#/';
+            window.location.href = '#/login';
             return;
         }
 
-        // Авторизация или регистрация (также бургер)
-        let burgerOpen = document.getElementById('burger-open');
-        let burgerClose = document.getElementById('burger-close');
-
         if (urlRoute === '#/login' || urlRoute === '#/signup') {
-            // Скрываем бургер и крестик
-            burgerOpen.style.display = 'none';
-            burgerClose.style.display = 'none';
-
             // Построение страницы при логине или регистрации
             this.authenticationElement.innerHTML =
                 await fetch(newRoute.template).then(response => response.text());
@@ -173,29 +164,21 @@ export class Router {
             this.authenticationElement.style.display = 'none';
             this.mainElement.style.display = 'flex';
 
-            // Показываем бургер и главную страницу, если экран шириной меньше 1024
-            const screenWidth = window.screen.width;
-            if (screenWidth < 1024) {
-                burgerOpen.style.display = 'block';
-                this.mainElement.style.display = 'block';
+            // Если не авторизован перекидываем на login
+            const userInfo = Auth.getUserInfo();
+            const accessToken = localStorage.getItem(Auth.accessTokenKey);
+
+            if (userInfo && accessToken) {
+                this.profilefullNameElement.innerText = userInfo.name + ' ' + userInfo.lastName;
+            } else {
+                window.location.href = '#/login';
             }
         }
 
-        // Как-то надо проверить авторизацию, если не авторизован скинуть на авторизацию
-        // const userInfo = Auth.getUserInfo();
-        // const accessToken = localStorage.getItem(Auth.accessTokenKey);
-        // if (userInfo && accessToken) {
-        //     this.profileElement.style.display = 'flex';
-        //     this.profilefullNameElement.innerText = userInfo.fullName;
-        // } else {
-        //     this.profileElement.style.display = 'none';
-        // }
-
-        // Основные скрипты главных элементов
-        new Common();
+        // Скрипт для бургера, применяется везде
+        new Burger();
 
         // Загрузка скриптов страниц по url
         newRoute.load();
-
     }
 }
