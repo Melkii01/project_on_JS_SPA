@@ -16,7 +16,7 @@ export class BudgetCreate {
         const mainPageItemsElement = document.getElementById('mainPageItems');
         mainPageItemsElement.innerHTML = '';
 
-        // Меняем заглавление
+        // Меняем оглавление
         const mainPageTitle = document.getElementById('mainPageTitle');
         mainPageTitle.innerText = 'Создание категории доходов';
         if (this.urlRoute === '#/expense') {

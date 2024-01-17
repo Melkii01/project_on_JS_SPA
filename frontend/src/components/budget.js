@@ -5,7 +5,7 @@ import {BudgetCreate} from "./budget-create.js";
 import {Popup} from "../utils/popup.js";
 
 export class Budget {
-    DataFromServer = null;
+    DataFromServer ;
     urlRoute = window.location.hash.split('?')[0];
 
     constructor() {
@@ -38,7 +38,7 @@ export class Budget {
     // Показываем на странице данные
     async showBudgetData() {
         // Строим блоки на странице urlRoute
-        // Меняем заглавление
+        // Меняем оглавление
         const mainPageTitle = document.getElementById('mainPageTitle');
         mainPageTitle.innerText = 'Доходы';
         if (this.urlRoute === '#/expense') {
