@@ -78,7 +78,7 @@ export class Router {
     async openRoute() {
         // URL адрес
         const urlRoute = window.location.hash.split('?')[0];
-        console.log(urlRoute, 'текущая страница');
+
         // Если выходим с акк
         if (urlRoute === '#/logout') {
             Auth.logout();
@@ -93,20 +93,11 @@ export class Router {
 
         // Если нет совпадений скидываем на главную страницу
         if (!newRoute) {
-            console.log('return to login, если пытаемся попасть на несуществующие странички')
             window.location.href = '#/login';
             return;
         }
 
-        // Авторизация или регистрация (также бургер)
-        let burgerOpen = document.getElementById('burger-open');
-        let burgerClose = document.getElementById('burger-close');
-
         if (urlRoute === '#/login' || urlRoute === '#/signup') {
-            // Скрываем бургер и крестик
-            burgerOpen.style.display = 'none';
-            burgerClose.style.display = 'none';
-
             // Построение страницы при логине или регистрации
             this.authenticationElement.innerHTML =
                 await fetch(newRoute.template).then(response => response.text());
@@ -123,13 +114,6 @@ export class Router {
             this.authenticationElement.style.display = 'none';
             this.mainElement.style.display = 'flex';
 
-            // Показываем бургер и главную страницу, если экран шириной меньше 1024
-            const screenWidth = window.screen.width;
-            if (screenWidth < 1024) {
-                burgerOpen.style.display = 'block';
-                this.mainElement.style.display = 'flex';
-            }
-
             // Если не авторизован перекидываем на login
             const userInfo = Auth.getUserInfo();
             const accessToken = localStorage.getItem(Auth.accessTokenKey);
@@ -139,10 +123,6 @@ export class Router {
                 // Загрузка баланса
                 new Balance();
             } else {
-                console.log('relocate to login, если не авторизованы');
-                if (userInfo) {
-                    localStorage.removeItem(Auth.userInfoKey)
-                }
                 window.location.href = '#/login';
             }
         }

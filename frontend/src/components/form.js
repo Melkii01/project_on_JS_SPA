@@ -12,7 +12,6 @@ export class Form {
         // Если токен есть, открываем главную страницу
         const accessToken = localStorage.getItem(Auth.accessTokenKey);
         if (accessToken) {
-            console.log('токен принят, открываем главную страницу')
             location.href = '#/';
             return;
         }
@@ -86,7 +85,6 @@ export class Form {
         this.formBtnElement = document.getElementById('form-btn');
 
         this.formBtnElement.onclick = function () {
-            console.log('form btn, клик по кнопке');
             that.progressForm();
         };
     }
@@ -95,12 +93,10 @@ export class Form {
     validateField(field, element) {
 
         if (!element.value || !element.value.match(field.regex)) {
-            console.log('validateField, красим в красный');
             element.parentNode.style.border = '2px solid red';
             element.parentNode.style.borderRadius = '6px';
             field.valid = false;
         } else {
-            console.log('validateField, все хорошо');
             element.parentNode.removeAttribute('style');
             field.valid = true;
         }
@@ -112,12 +108,10 @@ export class Form {
         // Проверяем если passwordCheck не совпадает с повтором пароля, красим в красный
         if (field.name === 'passwordRepeat') {
             if (element.value !== this.passwordCheck) {
-                console.log('Пароли не совпадают')
                 element.parentNode.style.border = '2px solid red';
                 element.parentNode.style.borderRadius = '6px';
                 field.valid = false;
             } else {
-                console.log('Пароли совпадают')
                 element.parentNode.removeAttribute('style');
                 field.valid = true;
             }
@@ -128,7 +122,6 @@ export class Form {
 
     // Возвращаем true или false
     validateForm() {
-        console.log('validateForm, возврат тру - не тру');
         const validForm = this.fields.every(item => item.valid);
 
         // Разблокируем кнопку если валидация верна
@@ -142,7 +135,6 @@ export class Form {
 
     // Отправка формы, регистрация, запись токена сессии
     async progressForm() {
-        console.log('progressForm, запуск функции');
         if (this.validateForm()) {
             const email = this.fields.find(item => item.name === 'email').element.value;
             const password = this.fields.find(item => item.name === 'password').element.value;
@@ -150,7 +142,6 @@ export class Form {
             const errorMessage = document.getElementById('errorMessage');
             if (this.page === 'signup') {
 
-                console.log('progress запуск signup');
                 const passwordRepeat = this.fields.find(item => item.name === 'passwordRepeat').element.value;
                 try {
                     const result = await CustomHttp.request(config.host + '/signup', 'POST', {
@@ -161,7 +152,6 @@ export class Form {
                             passwordRepeat: passwordRepeat
                         }
                     );
-                    console.log(result, 'signup')
 
                     if (result) {
                         if (result.error || !result.user) {
@@ -182,7 +172,6 @@ export class Form {
                 rememberMe = document.getElementById('formCheck').checked;
             }
 
-            console.log('progress запуск login');
             try {
                 const result = await CustomHttp.request(config.host + '/login', 'POST', {
                         email: email,
@@ -190,7 +179,6 @@ export class Form {
                         rememberMe: rememberMe
                     }
                 );
-                console.log(result, 'login')
                 if (result) {
                     if (result.error || result.message) {
                         errorMessage.style.display = 'block';
