@@ -1,42 +1,17 @@
 import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
 
-export class OperationsEdit {
-    operationData;
+export class OperationsCreate {
+    category;
     urlRoute = window.location.hash.split('?')[0];
 
 
-    constructor(operationId) {
-        this.operationId = operationId;
-        this.getOperationData()
+    constructor(type) {
+        this.type = type;
+        this.showOperation(this.type);
     }
 
-    // Достаем операцию
-    async getOperationData() {
-        try {
-            const result = await CustomHttp.request(config.host + '/operations/' + this.operationId);
-
-            if (result) {
-                if (result.error || result.message) {
-                    throw new Error(result.message);
-                } else {
-                    // Данные определенной операции
-                    console.log(result);
-                    this.operationData = result;
-                    const operationDate = result.date.split('-');
-                    this.operationDateRevers = operationDate[2] + '.' + operationDate[1] + '.' + operationDate[0];
-                    this.showOperation();
-                    return result
-                }
-            } else {
-                throw new Error(result.message);
-            }
-        } catch (e) {
-            return console.log(e);
-        }
-    }
-
-    // Достаем категорию для операции
+    // Достаем категорию для отправки операции
     async getBudgetData(category) {
         try {
             const result = await CustomHttp.request(config.host + '/categories/' + category);
@@ -66,7 +41,7 @@ export class OperationsEdit {
         // Создаем оглавление
         const mainPageTitle = document.createElement('h1');
         mainPageTitle.className = 'main-page-title';
-        mainPageTitle.innerText = 'Редактирование дохода/расхода';
+        mainPageTitle.innerText = 'Создание дохода/расхода';
         container.appendChild(mainPageTitle);
 
 
@@ -80,9 +55,9 @@ export class OperationsEdit {
         inputType.className = 'main-page-items-input';
         inputType.setAttribute('type', 'text');
         inputType.setAttribute('placeholder', 'Тип...');
-        if (this.operationData.type === 'income') {
+        if (this.type === 'income') {
             inputType.setAttribute('value', 'Доход');
-        } else if (this.operationData.type === 'expense') {
+        } else if (this.type === 'expense') {
             inputType.setAttribute('value', 'Расход');
         }
         inputType.setAttribute('id', 'inputType');
@@ -94,9 +69,6 @@ export class OperationsEdit {
         inputCategory.setAttribute('type', 'text');
         inputCategory.setAttribute('placeholder', 'Категории...');
         inputCategory.setAttribute('href', 'javascript:void(0)');
-        if (this.operationData.category) {
-            inputCategory.setAttribute('value', this.operationData.category);
-        }
         inputCategory.setAttribute('id', 'inputCategory');
         mainPageItems.appendChild(inputCategory);
 
@@ -106,7 +78,6 @@ export class OperationsEdit {
         inputAmount.setAttribute('type', 'text');
         inputAmount.setAttribute('placeholder', 'Сумма в $...');
         inputAmount.setAttribute('href', 'javascript:void(0)');
-        inputAmount.setAttribute('value', this.operationData.amount);
         inputAmount.setAttribute('id', 'inputAmount');
         mainPageItems.appendChild(inputAmount);
 
@@ -115,7 +86,6 @@ export class OperationsEdit {
         inputDate.className = 'main-page-items-input';
         inputDate.setAttribute('type', 'text');
         inputDate.setAttribute('placeholder', 'Дата...');
-        inputDate.setAttribute('value', this.operationDateRevers);
         inputDate.setAttribute('id', 'inputDate');
         mainPageItems.appendChild(inputDate);
 
@@ -124,7 +94,6 @@ export class OperationsEdit {
         inputComment.className = 'main-page-items-input';
         inputComment.setAttribute('type', 'text');
         inputComment.setAttribute('placeholder', 'Комментарий...');
-        inputComment.setAttribute('value', this.operationData.comment);
         inputComment.setAttribute('id', 'inputComment');
         mainPageItems.appendChild(inputComment);
 
@@ -149,7 +118,7 @@ export class OperationsEdit {
         const mainPageItemOptionCreateElement = document.createElement('button');
         mainPageItemOptionCreateElement.className = 'main-page-item-options-edit btn btn-success me-2';
         mainPageItemOptionCreateElement.innerText = 'Сохранить';
-        mainPageItemOptionCreateElement.setAttribute('id', 'editAgreeButton');
+        mainPageItemOptionCreateElement.setAttribute('id', 'agreeButton');
         mainPageItemOptionCreateElement.onclick = (e) => {
             e.preventDefault();
             this.sendEdit();
@@ -161,7 +130,7 @@ export class OperationsEdit {
         const mainPageItemOptionDeleteElement = document.createElement('button');
         mainPageItemOptionDeleteElement.className = 'main-page-item-options-delete btn btn-danger';
         mainPageItemOptionDeleteElement.innerText = 'Отмена';
-        mainPageItemOptionDeleteElement.setAttribute('id', 'editCancelButton');
+        mainPageItemOptionDeleteElement.setAttribute('id', 'cancelButton');
         mainPageItemOptionDeleteElement.onclick = () => {
             location.href = this.urlRoute;
         }
@@ -222,14 +191,14 @@ export class OperationsEdit {
         console.log(inputCategoryId);
 
         setTimeout(async () => {
-            console.log("Delayed for 10 second.");
+            console.log("Delayed for 3 second.");
 
             if (inputType.value && inputCategory.value && inputAmount.value
                 && inputDateElement.value) {
                 try {
 
                     const result = await CustomHttp.request(config.host + '/'
-                        + this.urlRoute.split('/')[1] + '/' + this.operationId, 'PUT', {
+                        + this.urlRoute.split('/')[1], 'POST', {
                         type: inputTypeValue,
                         amount: inputAmount.value,
                         date: inputDateRevert,
@@ -256,7 +225,6 @@ export class OperationsEdit {
                     return console.log(e);
                 }
             } else {
-
                 console.log('вы  ввели пустые значения '); // надо вывести сообщение пользователю
             }
         }, 3000);

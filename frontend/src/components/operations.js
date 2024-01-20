@@ -2,27 +2,121 @@ import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
 import {Popup} from "../utils/popup.js";
 import {OperationsEdit} from "./operations-edit.js";
+import {OperationsCreate} from "./operations-create";
+import AirDatepicker from 'air-datepicker';
 
 export class Operations {
     urlRoute = window.location.hash.split('?')[0];
     todayDate = new Date().toLocaleDateString().split('.');
     todayDateRevers = this.todayDate[2] + '-' + this.todayDate[1] + '-' + this.todayDate[0];
     operationsData;
+    startDateValue;
+    endDateValue;
 
     constructor() {
+        // Показывает изначально все операции
         this.getOperationsData('all');
-    }
 
-    // const result = await CustomHttp.request(config.host +
-    //     '/operations?period=interval&dateFrom=' + this.todayDateRevers
-    //     +'&dateTo=' + this.todayDateRevers);
+        // Кнопки выбора времени показа операций
+        const showToday = document.getElementById('showToday');
+        showToday.onclick = () => {
+            this.getOperationsData('intervalToday');
+        }
+        const showWeek = document.getElementById('showWeek');
+        showWeek.onclick = () => {
+            this.getOperationsData('week');
+        }
+        const showMonth = document.getElementById('showMonth');
+        showMonth.onclick = () => {
+            this.getOperationsData('month');
+        }
+        const showYear = document.getElementById('showYear');
+        showYear.onclick = () => {
+            this.getOperationsData('year');
+        }
+        const showAll = document.getElementById('showAll');
+        showAll.onclick = () => {
+            this.getOperationsData('all');
+        }
+
+        // Показ по интервалу
+        const showInterval = document.getElementById('showInterval');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+
+        let startDateValue;
+        startDate.addEventListener('click', () => {
+            new AirDatepicker('#startDate', {
+                onSelect: function ({ formattedDate}) {
+                    startDate.innerText = formattedDate;
+                    startDateValue = formattedDate;
+                    console.log(startDateValue)
+                }
+            });
+        }, {once: true});
+        // При клике несколько раз, заново открывает календарь, и не дает выбрать месяцы и годы.
+        // Точнее новый календарь перекрывает первого. И так идет цикл
+        // Надо понять как вызвать календарь по нажатию на див в самом календаре
+
+        let endDateValue;
+        endDate.addEventListener('click', () => {
+            new AirDatepicker('#endDate', {
+
+                onSelect: function ({ formattedDate}) {
+                    endDate.innerText = formattedDate;
+                    endDateValue = formattedDate;
+                    console.log(endDateValue)
+                }
+            });
+        }, {once: true});
+        // При клике несколько раз, заново открывает календарь, и не дает выбрать месяцы и годы.
+        // Точнее новый календарь перекрывает первого. И так идет цикл
+        // Надо понять как вызвать календарь по нажатию на див в самом календаре
+
+        showInterval.onclick = () => {
+            console.log('show')
+            console.log(startDateValue)
+            console.log(endDateValue)
+            if (startDateValue && endDateValue) {
+                let startDateValueData = startDateValue.split('.');
+                let startDateValueRevert = startDateValueData[2] + '-' + startDateValueData[1] + '-' + startDateValueData[0];
+
+                let endDateValueData = endDateValue.split('.');
+                let endDateValueRevert = endDateValueData[2] + '-' + endDateValueData[1] + '-' + endDateValueData[0];
+
+                this.getOperationsData('interval', startDateValueRevert, endDateValueRevert);
+            }
+        }
+
+
+        // Кнопки создать расход или доход
+        const createIncomeBtn = document.getElementById('createIncomeBtn');
+        createIncomeBtn.onclick = () => {
+            new OperationsCreate('income');
+        }
+        const createExpenseBtn = document.getElementById('createExpenseBtn');
+        createExpenseBtn.onclick = () => {
+            new OperationsCreate('expense');
+        }
+    }
 
 
     // Достаем операции по выбранному периоду
-    async getOperationsData(period) {
+    async getOperationsData(period, startDate, endDate) {
         try {
-            const result = await CustomHttp.request(config.host +
-                '/operations?period=' + period);
+            let result;
+            if (period === 'intervalToday') {
+                result = await CustomHttp.request(config.host +
+                    '/operations?period=interval&dateFrom=' + this.todayDateRevers
+                    + '&dateTo=' + this.todayDateRevers);
+            } else if (period === 'interval') {
+                result = await CustomHttp.request(config.host +
+                    '/operations?period=interval&dateFrom=' + startDate
+                    + '&dateTo=' + endDate);
+            } else {
+                result = await CustomHttp.request(config.host +
+                    '/operations?period=' + period);
+            }
             if (result) {
                 if (result.error || result.message) {
                     throw new Error(result.message);
@@ -40,7 +134,7 @@ export class Operations {
         }
     }
 
-    // Достаем категорию для операции
+// Достаем категорию для операции
     async getBudgetData(category) {
         try {
             const result = await CustomHttp.request(config.host + '/categories/' + category);
@@ -60,7 +154,7 @@ export class Operations {
         }
     }
 
-    // Создаем таблицу по данным операциям
+// Создаем таблицу по данным операциям
     showOperations() {
         const tableBody = document.getElementById('tableBody');
         tableBody.innerHTML = '';

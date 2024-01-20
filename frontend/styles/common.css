@@ -280,6 +280,8 @@ a {
 .main-page-nav-interval-link {
     color: #6C757D;
     margin-left: 17px;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .my-main-page-interval-link {
@@ -470,3 +472,9 @@ a {
     font-weight: 500;
     padding-bottom: 10px;
 }
+
+/* Стили для модуля даты */
+.air-datepicker.-inline- {
+    position: absolute;
+}
+

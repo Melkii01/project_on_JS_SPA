@@ -78,7 +78,7 @@ export class BudgetEdit {
         mainPageItemOptionCreateElement.className = 'main-page-item-options-edit btn btn-success me-2';
         mainPageItemOptionCreateElement.innerText = 'Сохранить';
         mainPageItemOptionCreateElement.setAttribute('id', 'editAgreeButton');
-        mainPageItemOptionCreateElement.onclick=()=>{
+        mainPageItemOptionCreateElement.onclick = () => {
             this.sendEdit();
         }
         mainPageItemOptions.appendChild(mainPageItemOptionCreateElement);
@@ -99,7 +99,7 @@ export class BudgetEdit {
     async sendEdit() {
         const editInput = document.getElementById('editInput');
         const errorMessage = document.getElementById('errorMessage');
-    console.log(editInput.value)
+
         if (editInput.value) {
             try {
                 const result = await CustomHttp.request(config.host + '/categories/' +
