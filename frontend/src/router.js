@@ -1,10 +1,10 @@
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
-import {ChartPie} from "./utils/chart-pie.js";
 import {Burger} from "./components/burger.js";
 import {Balance} from "./components/balance.js";
 import {Budget} from "./components/budget.js";
 import {Operations} from "./components/operations.js";
+import {Components} from "./components/components.js";
 
 
 export class Router {
@@ -24,7 +24,7 @@ export class Router {
                 template: 'templates/index.html',
                 styles: 'styles/index.css',
                 load: () => {
-                    new ChartPie();
+                    new Components();
                 }
             },
             {

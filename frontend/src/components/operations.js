@@ -10,8 +10,6 @@ export class Operations {
     todayDate = new Date().toLocaleDateString().split('.');
     todayDateRevers = this.todayDate[2] + '-' + this.todayDate[1] + '-' + this.todayDate[0];
     operationsData;
-    startDateValue;
-    endDateValue;
 
     constructor() {
         // Показывает изначально все операции
