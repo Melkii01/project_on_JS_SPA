@@ -4,7 +4,7 @@ import {Burger} from "./components/burger.js";
 import {Balance} from "./components/balance.js";
 import {Budget} from "./components/budget.js";
 import {Operations} from "./components/operations.js";
-import {Components} from "./components/components.js";
+import {Main} from "./components/main.js";
 
 
 export class Router {
@@ -24,7 +24,7 @@ export class Router {
                 template: 'templates/index.html',
                 styles: 'styles/index.css',
                 load: () => {
-                    new Components();
+                    new Main();
                 }
             },
             {

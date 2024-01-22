@@ -39,42 +39,28 @@ export class Operations {
 
         // Показ по интервалу
         const showInterval = document.getElementById('showInterval');
-        const startDate = document.getElementById('startDate');
-        const endDate = document.getElementById('endDate');
+        const startDateLabel = document.getElementById('startDateLabel');
+        const endDateLabel = document.getElementById('endDateLabel');
 
         let startDateValue;
-        startDate.addEventListener('click', () => {
             new AirDatepicker('#startDate', {
                 onSelect: function ({ formattedDate}) {
-                    startDate.innerText = formattedDate;
+                    startDateLabel.innerText = formattedDate;
                     startDateValue = formattedDate;
-                    console.log(startDateValue)
-                }
+                },
+                autoClose:true
             });
-        }, {once: true});
-        // При клике несколько раз, заново открывает календарь, и не дает выбрать месяцы и годы.
-        // Точнее новый календарь перекрывает первого. И так идет цикл
-        // Надо понять как вызвать календарь по нажатию на див в самом календаре
 
         let endDateValue;
-        endDate.addEventListener('click', () => {
             new AirDatepicker('#endDate', {
-
                 onSelect: function ({ formattedDate}) {
-                    endDate.innerText = formattedDate;
+                    endDateLabel.innerText = formattedDate;
                     endDateValue = formattedDate;
-                    console.log(endDateValue)
-                }
+                },
+                autoClose:true
             });
-        }, {once: true});
-        // При клике несколько раз, заново открывает календарь, и не дает выбрать месяцы и годы.
-        // Точнее новый календарь перекрывает первого. И так идет цикл
-        // Надо понять как вызвать календарь по нажатию на див в самом календаре
 
         showInterval.onclick = () => {
-            console.log('show')
-            console.log(startDateValue)
-            console.log(endDateValue)
             if (startDateValue && endDateValue) {
                 let startDateValueData = startDateValue.split('.');
                 let startDateValueRevert = startDateValueData[2] + '-' + startDateValueData[1] + '-' + startDateValueData[0];

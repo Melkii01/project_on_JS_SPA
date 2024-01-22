@@ -105,7 +105,7 @@ export class Budget {
         // Создаем название данного блока
         const mainPageItemTitleElement = document.createElement('div');
         mainPageItemTitleElement.className = 'main-page-item-title invisible';
-        mainPageItemTitleElement.innerText = 'Название данных';
+        mainPageItemTitleElement.innerText = 'Данные';
         mainPageItemLinkElement.appendChild(mainPageItemTitleElement);
 
         // Создаем блок кнопок

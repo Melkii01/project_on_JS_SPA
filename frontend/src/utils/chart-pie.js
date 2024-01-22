@@ -29,38 +29,45 @@ export class ChartPie {
         let partsPie = [];
         let labels = [];
         let labelsColor = [];
-
-        data.forEach((item) => {
-            partsPie.push(item.amount);
-            labels.push(item.category);
-            labelsColor.push("#" + RandomColor())
-        })
-
         const ctx = document.getElementById('myChart1');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Доход',
-                        data: partsPie,
-                        backgroundColor: labelsColor,
+        const mainPageChartNoData = document.getElementById('mainPageChartNoData1');
+
+        if (!data.length) {
+            mainPageChartNoData.style.display = 'block';
+        } else {
+            mainPageChartNoData.style.display = 'none';
+
+            data.forEach((item) => {
+                partsPie.push(item.amount);
+                labels.push(item.category);
+                labelsColor.push("#" + RandomColor())
+            })
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Доход',
+                            data: partsPie,
+                            backgroundColor: labelsColor,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true
-                    }
-                }
-            },
-        });
+                },
+            });
+        }
     }
 
     // Пирог расхода
@@ -75,38 +82,45 @@ export class ChartPie {
         let partsPie = [];
         let labels = [];
         let labelsColor = [];
-
-        data.forEach((item) => {
-            partsPie.push(item.amount);
-            labels.push(item.category);
-            labelsColor.push("#" + RandomColor())
-        })
-
         const ctx = document.getElementById('myChart2');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Расход',
-                        data: partsPie,
-                        backgroundColor: labelsColor,
+        const mainPageChartNoData = document.getElementById('mainPageChartNoData2');
+
+        if (!data.length) {
+            mainPageChartNoData.style.display = 'block';
+        } else {
+            mainPageChartNoData.style.display = 'none';
+
+            data.forEach((item) => {
+                partsPie.push(item.amount);
+                labels.push(item.category);
+                labelsColor.push("#" + RandomColor())
+            })
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Расход',
+                            data: partsPie,
+                            backgroundColor: labelsColor,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true
-                    }
-                }
-            },
-        });
+                },
+            });
+        }
     }
 }
 

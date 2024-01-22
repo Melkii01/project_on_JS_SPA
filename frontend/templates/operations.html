@@ -18,14 +18,23 @@
                 <button type="button" class="btn btn-outline-secondary" id="showInterval">Интервал</button>
             </div>
             <div class="main-page-nav-interval d-flex flex-nowrap">
-                <div class="d-flex flex-nowrap">c
-                    <div class="main-page-nav-interval-link my-main-page-interval-link"
-                       id="startDate">Дата</div>
-                    <input type="hidden" name="no">
+                <div class="d-flex flex-nowrap">
+                    c
+                    <div class="flex-column d-flex">
+                        <label id="startDateLabel" for="startDate"
+                               class="main-page-nav-interval-date my-main-page-nav-interval-date">
+                            Дата
+                        </label>
+                        <input type="text" id="startDate" class="main-page-nav-interval-input">
+                    </div>
                 </div>
-                <div class="d-flex flex-nowrap">по
-                    <div class="main-page-nav-interval-link"
-                       id="endDate">Дата</div>
+                <div class="d-flex flex-nowrap">
+                    по
+                    <div class="flex-column d-flex">
+                        <label id="endDateLabel" for="endDate" class="main-page-nav-interval-date"
+                        >Дата</label>
+                        <input type="text" id="endDate" class="main-page-nav-interval-input">
+                    </div>
                 </div>
             </div>
         </div>

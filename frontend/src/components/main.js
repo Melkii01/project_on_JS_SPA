@@ -3,7 +3,7 @@ import config from "../../config/config.js";
 import AirDatepicker from 'air-datepicker';
 import {ChartPie} from "../utils/chart-pie.js";
 
-export class Components {
+export class Main {
     todayDate = new Date().toLocaleDateString().split('.');
     todayDateRevers = this.todayDate[2] + '-' + this.todayDate[1] + '-' + this.todayDate[0];
     constructor() {
@@ -34,42 +34,28 @@ export class Components {
 
         // Показ по интервалу
         const showInterval = document.getElementById('showInterval');
-        const startDate = document.getElementById('startDate');
-        const endDate = document.getElementById('endDate');
+        const startDateLabel = document.getElementById('startDateLabel');
+        const endDateLabel = document.getElementById('endDateLabel');
 
         let startDateValue;
-        startDate.addEventListener('click', () => {
-            new AirDatepicker('#startDate', {
-                onSelect: function ({ formattedDate}) {
-                    startDate.innerText = formattedDate;
-                    startDateValue = formattedDate;
-                    console.log(startDateValue)
-                }
-            });
-        }, {once: true});
-        // При клике несколько раз, заново открывает календарь, и не дает выбрать месяцы и годы.
-        // Точнее новый календарь перекрывает первого. И так идет цикл
-        // Надо понять как вызвать календарь по нажатию на див в самом календаре
+        new AirDatepicker('#startDate', {
+            onSelect: function ({ formattedDate}) {
+                startDateLabel.innerText = formattedDate;
+                startDateValue = formattedDate;
+            },
+            autoClose:true
+        });
 
         let endDateValue;
-        endDate.addEventListener('click', () => {
-            new AirDatepicker('#endDate', {
-
-                onSelect: function ({ formattedDate}) {
-                    endDate.innerText = formattedDate;
-                    endDateValue = formattedDate;
-                    console.log(endDateValue)
-                }
-            });
-        }, {once: true});
-        // При клике несколько раз, заново открывает календарь, и не дает выбрать месяцы и годы.
-        // Точнее новый календарь перекрывает первого. И так идет цикл
-        // Надо понять как вызвать календарь по нажатию на див в самом календаре
+        new AirDatepicker('#endDate', {
+            onSelect: function ({ formattedDate}) {
+                endDateLabel.innerText = formattedDate;
+                endDateValue = formattedDate;
+            },
+            autoClose:true
+        });
 
         showInterval.onclick = () => {
-            console.log('show')
-            console.log(startDateValue)
-            console.log(endDateValue)
             if (startDateValue && endDateValue) {
                 let startDateValueData = startDateValue.split('.');
                 let startDateValueRevert = startDateValueData[2] + '-' + startDateValueData[1] + '-' + startDateValueData[0];
@@ -105,7 +91,6 @@ export class Components {
                 } else {
                     // Сохраняем результат в переменную
                     new ChartPie(result);
-                    // console.log(result);
                 }
             } else {
                 throw new Error(result.message);
