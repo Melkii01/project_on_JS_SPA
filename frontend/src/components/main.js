@@ -6,31 +6,29 @@ import {ChartPie} from "../utils/chart-pie.js";
 export class Main {
     todayDate = new Date().toLocaleDateString().split('.');
     todayDateRevers = this.todayDate[2] + '-' + this.todayDate[1] + '-' + this.todayDate[0];
+
     constructor() {
+        const btnBlock = document.querySelectorAll('.btn-outline-secondary');
+        const showAll = document.getElementById('showAll');
+
         // Показывает изначально все операции
+        btnBlock.forEach((item) => {
+            item.classList.remove('active');
+        })
         this.getOperationsData('all');
+        showAll.classList.add('active');
 
         // Кнопки выбора времени показа операций
-        const showToday = document.getElementById('showToday');
-        showToday.onclick = () => {
-            this.getOperationsData('intervalToday');
-        }
-        const showWeek = document.getElementById('showWeek');
-        showWeek.onclick = () => {
-            this.getOperationsData('week');
-        }
-        const showMonth = document.getElementById('showMonth');
-        showMonth.onclick = () => {
-            this.getOperationsData('month');
-        }
-        const showYear = document.getElementById('showYear');
-        showYear.onclick = () => {
-            this.getOperationsData('year');
-        }
-        const showAll = document.getElementById('showAll');
-        showAll.onclick = () => {
-            this.getOperationsData('all');
-        }
+        // На каждую кнопку навешиваем клик для показа периода
+        let arrPeriod = ['intervalToday', 'week', 'month', 'year', 'all'];
+        btnBlock.forEach((item,i) => {
+            item.onclick = () => {
+                btnBlock.forEach((i) => i.classList.remove('active')
+                )
+                this.getOperationsData(arrPeriod[i]);
+                item.classList.add('active');
+            }
+        })
 
         // Показ по интервалу
         const showInterval = document.getElementById('showInterval');
@@ -39,20 +37,34 @@ export class Main {
 
         let startDateValue;
         new AirDatepicker('#startDate', {
-            onSelect: function ({ formattedDate}) {
-                startDateLabel.innerText = formattedDate;
+            onSelect: function ({formattedDate}) {
+                startDateLabel.innerText = 'Дата';
+                showInterval.setAttribute('disabled', 'disabled');
+                if (formattedDate) {
+                    startDateLabel.innerText = formattedDate;
+                    if (endDateValue) {
+                        showInterval.removeAttribute('disabled');
+                    }
+                }
                 startDateValue = formattedDate;
             },
-            autoClose:true
+            autoClose: true
         });
 
         let endDateValue;
         new AirDatepicker('#endDate', {
-            onSelect: function ({ formattedDate}) {
-                endDateLabel.innerText = formattedDate;
+            onSelect: function ({formattedDate}) {
+                endDateLabel.innerText = 'Дата';
+                showInterval.setAttribute('disabled', 'disabled');
+                if (formattedDate) {
+                    endDateLabel.innerText = formattedDate;
+                    if (startDateValue) {
+                        showInterval.removeAttribute('disabled');
+                    }
+                }
                 endDateValue = formattedDate;
             },
-            autoClose:true
+            autoClose: true
         });
 
         showInterval.onclick = () => {
@@ -63,7 +75,11 @@ export class Main {
                 let endDateValueData = endDateValue.split('.');
                 let endDateValueRevert = endDateValueData[2] + '-' + endDateValueData[1] + '-' + endDateValueData[0];
 
+                btnBlock.forEach((item) => {
+                    item.classList.remove('active');
+                })
                 this.getOperationsData('interval', startDateValueRevert, endDateValueRevert);
+                showInterval.classList.add('active');
             }
         }
     }

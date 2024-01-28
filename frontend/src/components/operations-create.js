@@ -1,26 +1,30 @@
 import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
+import AirDatepicker from "air-datepicker";
 
 export class OperationsCreate {
-    category;
+    categoryData;
+    type;
     urlRoute = window.location.hash.split('?')[0];
 
 
     constructor(type) {
         this.type = type;
-        this.showOperation(this.type);
+        this.getBudgetData(type);
     }
 
     // Достаем категорию для отправки операции
-    async getBudgetData(category) {
+    async getBudgetData(type) {
         try {
-            const result = await CustomHttp.request(config.host + '/categories/' + category);
+            const result = await CustomHttp.request(config.host + '/categories/' + type);
 
             if (result) {
                 if (result.error || result.message) {
                     throw new Error(result.message);
                 } else {
                     // Сохраняем результат в переменную
+                    this.categoryData = result;
+                    this.showOperation();
                     return result
                 }
             } else {
@@ -42,6 +46,11 @@ export class OperationsCreate {
         const mainPageTitle = document.createElement('h1');
         mainPageTitle.className = 'main-page-title';
         mainPageTitle.innerText = 'Создание дохода/расхода';
+        if (this.type === 'income') {
+            mainPageTitle.innerText = 'Создание дохода';
+        } else if (this.type === 'expense') {
+            mainPageTitle.innerText = 'Создание расхода';
+        }
         container.appendChild(mainPageTitle);
 
 
@@ -50,27 +59,35 @@ export class OperationsCreate {
         mainPageItems.className = 'main-page-items flex-column d-flex';
         container.appendChild(mainPageItems);
 
-        // Создаем инпут тип
-        const inputType = document.createElement('input');
-        inputType.className = 'main-page-items-input';
-        inputType.setAttribute('type', 'text');
-        inputType.setAttribute('placeholder', 'Тип...');
-        if (this.type === 'income') {
-            inputType.setAttribute('value', 'Доход');
-        } else if (this.type === 'expense') {
-            inputType.setAttribute('value', 'Расход');
-        }
-        inputType.setAttribute('id', 'inputType');
-        mainPageItems.appendChild(inputType);
+        // Создаем выбор типа
+        const selectType = document.createElement('select');
+        selectType.className = 'main-page-items-input form-select';
+        selectType.setAttribute('aria-label', 'Default select example');
+        selectType.setAttribute('id', 'selectType');
+        selectType.setAttribute('disabled', 'disabled');
+        mainPageItems.appendChild(selectType);
 
-        // Создаем инпут категория
-        const inputCategory = document.createElement('input');
-        inputCategory.className = 'main-page-items-input';
-        inputCategory.setAttribute('type', 'text');
-        inputCategory.setAttribute('placeholder', 'Категории...');
-        inputCategory.setAttribute('href', 'javascript:void(0)');
-        inputCategory.setAttribute('id', 'inputCategory');
-        mainPageItems.appendChild(inputCategory);
+        const selectTypeOption = document.createElement('option');
+        if (this.type === 'income') {
+            selectTypeOption.innerText = 'Доход';
+        } else if (this.type === 'expense') {
+            selectTypeOption.innerText = 'Расход';
+        }
+        selectType.appendChild(selectTypeOption);
+
+
+        // Создаем выбор категорий
+        const selectCategory = document.createElement('select');
+        selectCategory.className = 'main-page-items-input form-select';
+        selectCategory.setAttribute('aria-label', 'Default select example');
+        selectCategory.setAttribute('id', 'selectCategory');
+        mainPageItems.appendChild(selectCategory);
+
+        this.categoryData.forEach(category => {
+            const inputCategoryOption = document.createElement('option');
+            inputCategoryOption.innerText = category.title;
+            selectCategory.appendChild(inputCategoryOption);
+        });
 
         // Создаем инпут сумма
         const inputAmount = document.createElement('input');
@@ -88,6 +105,9 @@ export class OperationsCreate {
         inputDate.setAttribute('placeholder', 'Дата...');
         inputDate.setAttribute('id', 'inputDate');
         mainPageItems.appendChild(inputDate);
+        new AirDatepicker('#inputDate', {
+            autoClose: true
+        });
 
         // Создаем инпут комментарий
         const inputComment = document.createElement('input');
@@ -139,82 +159,75 @@ export class OperationsCreate {
 
 // Отправка данных по клику
     async sendEdit() {
-        const inputType = document.getElementById('inputType');
-        const inputCategory = document.getElementById('inputCategory');
+        const selectType = document.getElementById('selectType');
+        const selectCategory = document.getElementById('selectCategory');
         const inputAmount = document.getElementById('inputAmount');
         const inputDateElement = document.getElementById('inputDate');
         const inputComment = document.getElementById('inputComment');
-        const errorMessage = document.getElementById('errorMessage');
 
         // Переворачиваем дату
         const inputDate = inputDateElement.value.split('.');
         const inputDateRevert = inputDate[2] + '-' + inputDate[1] + '-' + inputDate[0];
 
-        // Перезаписываем в тип
-        let inputTypeValue ;
-        let inputCategoryId;
-        if (inputType.value === 'Доход') {
-            inputTypeValue = 'income';
-            const getCategory =  this.getBudgetData(inputTypeValue)
+        // Перезаписываем в тип и достаем id категории
+        let selectTypeValue;
+        let selectCategoryId;
+        if (selectType.value === 'Доход') {
+            selectTypeValue = 'income';
+            const getCategory = this.getBudgetData(selectTypeValue)
                 .then((categorys) => {
                     return categorys.find((category) => {
-                        if (category.title === inputCategory.value) {
+                        if (category.title === selectCategory.value) {
                             return category.id
                         }
                     })
                 })
             getCategory.then((a) => {
                 if (a) {
-                    inputCategoryId= a.id;
-                    console.log(a);
+                    selectCategoryId = a.id;
                 }
             });
-        } else if (inputType.value === 'Расход') {
-            inputTypeValue = 'expense';
-            const getCategory =  this.getBudgetData(inputTypeValue)
+        } else if (selectType.value === 'Расход') {
+            selectTypeValue = 'expense';
+            const getCategory = this.getBudgetData(selectTypeValue)
                 .then((categorys) => {
                     return categorys.find((category) => {
-                        if (category.title === inputCategory.value) {
+                        if (category.title === selectCategory.value) {
                             return category.id
                         }
                     })
                 })
             getCategory.then((a) => {
                 if (a) {
-                    inputCategoryId= a.id;
-                    console.log(a);
+                    selectCategoryId = a.id;
                 }
             });
         }
 
-
-        console.log(inputCategoryId);
-
         setTimeout(async () => {
-            console.log("Delayed for 3 second.");
+            const errorMessage = document.getElementById('errorMessage');
 
-            if (inputType.value && inputCategory.value && inputAmount.value
-                && inputDateElement.value) {
+            if (selectType.value && selectCategory.value && inputAmount.value
+                && inputDateElement.value && inputComment.value) {
+
                 try {
-
                     const result = await CustomHttp.request(config.host + '/'
                         + this.urlRoute.split('/')[1], 'POST', {
-                        type: inputTypeValue,
+                        type: selectTypeValue,
+                        category_id: selectCategoryId,
                         amount: inputAmount.value,
                         date: inputDateRevert,
-                        comment: inputComment.value,
-                        category_id: inputCategoryId
+                        comment: inputComment.value
                     });
                     if (result) {
                         if (result.error || result.message) {
                             errorMessage.style.display = 'flex';
+                            errorMessage.firstChild.innerText = '- Ошибка данных';
                             throw new Error(result.message);
                         } else {
-                            // Успешно, возвращаемся в доходы
-                            console.log('успешно')
+                            // Успешно
                             errorMessage.style.display = 'none';
                             location.href = this.urlRoute;
-                            console.log(inputCategoryId);
                         }
                     } else {
                         errorMessage.style.display = 'flex';
@@ -222,11 +235,14 @@ export class OperationsCreate {
                     }
 
                 } catch (e) {
+                    errorMessage.style.display = 'flex';
+                    errorMessage.firstChild.innerText = '- Сервер не работает';
                     return console.log(e);
                 }
             } else {
-                console.log('вы  ввели пустые значения '); // надо вывести сообщение пользователю
+                errorMessage.style.display = 'flex';
+                errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
             }
-        }, 3000);
+        }, 1000);
     }
 }

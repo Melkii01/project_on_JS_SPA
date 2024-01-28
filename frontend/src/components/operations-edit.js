@@ -1,14 +1,16 @@
 import {CustomHttp} from "../services/custom-http.js";
 import config from "../../config/config.js";
+import AirDatepicker from "air-datepicker";
 
 export class OperationsEdit {
     operationData;
+    categoryData;
     urlRoute = window.location.hash.split('?')[0];
 
 
     constructor(operationId) {
         this.operationId = operationId;
-        this.getOperationData()
+        this.getOperationData();
     }
 
     // Достаем операцию
@@ -21,11 +23,10 @@ export class OperationsEdit {
                     throw new Error(result.message);
                 } else {
                     // Данные определенной операции
-                    console.log(result);
                     this.operationData = result;
                     const operationDate = result.date.split('-');
                     this.operationDateRevers = operationDate[2] + '.' + operationDate[1] + '.' + operationDate[0];
-                    this.showOperation();
+                    this.getBudgetData(result.type);
                     return result
                 }
             } else {
@@ -46,6 +47,8 @@ export class OperationsEdit {
                     throw new Error(result.message);
                 } else {
                     // Сохраняем результат в переменную
+                    this.categoryData = result;
+                    this.showOperation();
                     return result
                 }
             } else {
@@ -66,7 +69,11 @@ export class OperationsEdit {
         // Создаем оглавление
         const mainPageTitle = document.createElement('h1');
         mainPageTitle.className = 'main-page-title';
-        mainPageTitle.innerText = 'Редактирование дохода/расхода';
+        if (this.operationData.type === 'income') {
+            mainPageTitle.innerText = 'Редактирование дохода';
+        } else if (this.operationData.type === 'expense') {
+            mainPageTitle.innerText = 'Редактирование расхода';
+        }
         container.appendChild(mainPageTitle);
 
 
@@ -75,30 +82,43 @@ export class OperationsEdit {
         mainPageItems.className = 'main-page-items flex-column d-flex';
         container.appendChild(mainPageItems);
 
-        // Создаем инпут тип
-        const inputType = document.createElement('input');
-        inputType.className = 'main-page-items-input';
-        inputType.setAttribute('type', 'text');
-        inputType.setAttribute('placeholder', 'Тип...');
-        if (this.operationData.type === 'income') {
-            inputType.setAttribute('value', 'Доход');
-        } else if (this.operationData.type === 'expense') {
-            inputType.setAttribute('value', 'Расход');
-        }
-        inputType.setAttribute('id', 'inputType');
-        mainPageItems.appendChild(inputType);
+        // Создаем выбор типа
+        const selectType = document.createElement('select');
+        selectType.className = 'main-page-items-input form-select';
+        selectType.setAttribute('aria-label', 'Default select example');
+        selectType.setAttribute('id', 'selectType');
+        selectType.setAttribute('disabled', 'disabled');
+        mainPageItems.appendChild(selectType);
 
-        // Создаем инпут категория
-        const inputCategory = document.createElement('input');
-        inputCategory.className = 'main-page-items-input';
-        inputCategory.setAttribute('type', 'text');
-        inputCategory.setAttribute('placeholder', 'Категории...');
-        inputCategory.setAttribute('href', 'javascript:void(0)');
-        if (this.operationData.category) {
-            inputCategory.setAttribute('value', this.operationData.category);
+        const selectTypeOption = document.createElement('option');
+        if (this.operationData.type === 'income') {
+            selectTypeOption.innerText = 'Доход';
+        } else if (this.operationData.type === 'expense') {
+            selectTypeOption.innerText = 'Расход';
         }
-        inputCategory.setAttribute('id', 'inputCategory');
-        mainPageItems.appendChild(inputCategory);
+        selectType.appendChild(selectTypeOption);
+
+        // Создаем выбор категорий
+        const selectCategory = document.createElement('select');
+        selectCategory.className = 'main-page-items-input form-select';
+        selectCategory.setAttribute('aria-label', 'Default select example');
+        selectCategory.setAttribute('id', 'selectCategory');
+        mainPageItems.appendChild(selectCategory);
+        // Создаем список по типу категории
+        this.categoryData.forEach(category => {
+            const selectCategoryOption = document.createElement('option');
+            selectCategoryOption.innerText = category.title;
+            selectCategoryOption.setAttribute('value', category.id);
+            selectCategory.appendChild(selectCategoryOption);
+        });
+        // Выбираем выбранную категорию из списка
+        this.categoryData.find(category => {
+            const selectCategory = document.getElementById('selectCategory');
+            if (category.title === this.operationData.category) {
+                selectCategory.selectedIndex = category.id - 1;
+            }
+        });
+        mainPageItems.appendChild(selectCategory);
 
         // Создаем инпут сумма
         const inputAmount = document.createElement('input');
@@ -118,6 +138,9 @@ export class OperationsEdit {
         inputDate.setAttribute('value', this.operationDateRevers);
         inputDate.setAttribute('id', 'inputDate');
         mainPageItems.appendChild(inputDate);
+        new AirDatepicker('#inputDate', {
+            autoClose: true
+        });
 
         // Создаем инпут комментарий
         const inputComment = document.createElement('input');
@@ -170,82 +193,59 @@ export class OperationsEdit {
 
 // Отправка данных по клику
     async sendEdit() {
-        const inputType = document.getElementById('inputType');
-        const inputCategory = document.getElementById('inputCategory');
+        const selectType = document.getElementById('selectType');
+        const selectCategory = document.getElementById('selectCategory');
         const inputAmount = document.getElementById('inputAmount');
         const inputDateElement = document.getElementById('inputDate');
         const inputComment = document.getElementById('inputComment');
-        const errorMessage = document.getElementById('errorMessage');
 
         // Переворачиваем дату
         const inputDate = inputDateElement.value.split('.');
         const inputDateRevert = inputDate[2] + '-' + inputDate[1] + '-' + inputDate[0];
 
         // Перезаписываем в тип
-        let inputTypeValue ;
-        let inputCategoryId;
-        if (inputType.value === 'Доход') {
-            inputTypeValue = 'income';
-            const getCategory =  this.getBudgetData(inputTypeValue)
-                .then((categorys) => {
-                    return categorys.find((category) => {
-                        if (category.title === inputCategory.value) {
-                            return category.id
-                        }
-                    })
-                })
-            getCategory.then((a) => {
-                if (a) {
-                    inputCategoryId= a.id;
-                    console.log(a);
+        let selectTypeValue;
+        let getCategory;
+        if (selectType.value === 'Доход') {
+            selectTypeValue = 'income';
+            getCategory = this.categoryData.find((category) => {
+                if (category.id === Number(selectCategory.value)) {
+                    return category.id;
                 }
-            });
-        } else if (inputType.value === 'Расход') {
-            inputTypeValue = 'expense';
-            const getCategory =  this.getBudgetData(inputTypeValue)
-                .then((categorys) => {
-                    return categorys.find((category) => {
-                        if (category.title === inputCategory.value) {
-                            return category.id
-                        }
-                    })
-                })
-            getCategory.then((a) => {
-                if (a) {
-                    inputCategoryId= a.id;
-                    console.log(a);
+            })
+        } else if (selectType.value === 'Расход') {
+            selectTypeValue = 'expense';
+            getCategory = this.categoryData.find((category) => {
+                if (category.id === Number(selectCategory.value)) {
+                    return category.id;
                 }
-            });
+            })
         }
 
-
-        console.log(inputCategoryId);
-
         setTimeout(async () => {
-            console.log("Delayed for 10 second.");
+            const errorMessage = document.getElementById('errorMessage');
 
-            if (inputType.value && inputCategory.value && inputAmount.value
-                && inputDateElement.value) {
+            if (selectType.value && selectCategory.value && inputAmount.value
+                && inputDateElement.value && inputComment.value) {
                 try {
 
                     const result = await CustomHttp.request(config.host + '/'
                         + this.urlRoute.split('/')[1] + '/' + this.operationId, 'PUT', {
-                        type: inputTypeValue,
+                        type: selectTypeValue,
+                        category_id: getCategory.id,
                         amount: inputAmount.value,
                         date: inputDateRevert,
-                        comment: inputComment.value,
-                        category_id: inputCategoryId
+                        comment: inputComment.value
                     });
                     if (result) {
                         if (result.error || result.message) {
                             errorMessage.style.display = 'flex';
+                            errorMessage.firstChild.innerText = '- Ошибка данных';
                             throw new Error(result.message);
                         } else {
-                            // Успешно, возвращаемся в доходы
-                            console.log('успешно')
+                            // Успешно
                             errorMessage.style.display = 'none';
                             location.href = this.urlRoute;
-                            console.log(inputCategoryId);
                         }
                     } else {
                         errorMessage.style.display = 'flex';
@@ -253,12 +253,14 @@ export class OperationsEdit {
                     }
 
                 } catch (e) {
+                    errorMessage.style.display = 'flex';
+                    errorMessage.firstChild.innerText = '- Сервер не работает';
                     return console.log(e);
                 }
             } else {
-
-                console.log('вы  ввели пустые значения '); // надо вывести сообщение пользователю
+                errorMessage.style.display = 'flex';
+                errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
             }
-        }, 3000);
+        }, 1000);
     }
 }

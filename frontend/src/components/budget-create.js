@@ -78,13 +78,13 @@ export class BudgetCreate {
         const createCancelButton = document.getElementById('createCancelButton');
         let errorMessage = document.getElementById('errorMessage');
 
-        createAgreeButton.onclick = async (e) => {
+        createAgreeButton.onclick = async () => {
             if (createInput.value) {
                 try {
                     const result = await CustomHttp.request(config.host + '/categories/' + this.urlRoute.split('/')[1],
                         'POST',
                         {
-                            title:createInput.value
+                            title: createInput.value
                         });
 
                     if (result) {
@@ -97,12 +97,17 @@ export class BudgetCreate {
                             location.href = this.urlRoute;
                         }
                     } else {
+                        errorMessage.style.display = 'flex';
                         throw new Error(result.message);
                     }
 
                 } catch (e) {
+                    errorMessage.style.display = 'flex';
                     return console.log(e);
                 }
+            } else {
+                errorMessage.style.display = 'flex';
+                errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
             }
         }
         createCancelButton.onclick = () => {

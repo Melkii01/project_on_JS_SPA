@@ -121,10 +121,12 @@ export class BudgetEdit {
                 }
 
             } catch (e) {
+                errorMessage.style.display = 'flex';
                 return console.log(e);
             }
         } else {
-            console.log('Пустое значение'); // надо как то вывести пользователю
+            errorMessage.style.display = 'flex';
+            errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
         }
     }
 }
