@@ -125,7 +125,6 @@ export class OperationsEdit {
         inputAmount.className = 'main-page-items-input';
         inputAmount.setAttribute('type', 'text');
         inputAmount.setAttribute('placeholder', 'Сумма в $...');
-        inputAmount.setAttribute('href', 'javascript:void(0)');
         inputAmount.setAttribute('value', this.operationData.amount);
         inputAmount.setAttribute('id', 'inputAmount');
         mainPageItems.appendChild(inputAmount);
@@ -192,7 +191,7 @@ export class OperationsEdit {
     }
 
 // Отправка данных по клику
-    async sendEdit() {
+     sendEdit() {
         const selectType = document.getElementById('selectType');
         const selectCategory = document.getElementById('selectCategory');
         const inputAmount = document.getElementById('inputAmount');

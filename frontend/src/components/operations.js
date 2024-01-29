@@ -25,7 +25,7 @@ export class Operations {
         // Кнопки выбора времени показа операций
         // На каждую кнопку навешиваем клик для показа периода
         let arrPeriod = ['intervalToday', 'week', 'month', 'year', 'all'];
-        btnBlock.forEach((item,i) => {
+        btnBlock.forEach((item, i) => {
             item.onclick = () => {
                 btnBlock.forEach((i) => i.classList.remove('active')
                 )
@@ -80,7 +80,7 @@ export class Operations {
                 let endDateValueData = endDateValue.split('.');
                 let endDateValueRevert = endDateValueData[2] + '-' + endDateValueData[1] + '-' + endDateValueData[0];
 
-                btnBlock.forEach((item)=>{
+                btnBlock.forEach((item) => {
                     item.classList.remove('active');
                 })
                 this.getOperationsData('interval', startDateValueRevert, endDateValueRevert);
@@ -154,7 +154,7 @@ export class Operations {
         }
     }
 
-// Создаем таблицу по данным операциям
+    // Создаем таблицу по данным операциям
     showOperations() {
         const tableBody = document.getElementById('tableBody');
         tableBody.innerHTML = '';
@@ -189,29 +189,40 @@ export class Operations {
 
                     // Категория
                     const category = document.createElement('td');
+                    const createIncomeBtn = document.getElementById('createIncomeBtn');
+                    const createExpenseBtn = document.getElementById('createExpenseBtn');
 
                     if (operation.type === 'income') {
                         const getCategory = this.getBudgetData(operation.type)
                             .then((categorys) => {
-                                return categorys.find((category) => {
-                                    if (category.title === operation.category) {
-                                        return category.title
-                                    }
-                                })
+                                if (categorys.length === 0) {
+                                    createIncomeBtn.setAttribute('disabled', 'disabled');
+                                } else {
+                                    return categorys.find((category) => {
+                                        if (category.title === operation.category) {
+                                            return category.title
+                                        }
+                                    })
+                                }
                             })
                         getCategory.then((a) => {
                             if (a) {
                                 category.innerText = a.title;
                             }
+
                         });
                     } else if (operation.type === 'expense') {
                         const getCategory = this.getBudgetData(operation.type)
                             .then((categorys) => {
-                                return categorys.find((category) => {
-                                    if (category.title === operation.category) {
-                                        return category.title
-                                    }
-                                })
+                                if (categorys.length === 0) {
+                                    createExpenseBtn.setAttribute('disabled', 'disabled');
+                                } else {
+                                    return categorys.find((category) => {
+                                        if (category.title === operation.category) {
+                                            return category.title
+                                        }
+                                    })
+                                }
                             })
                         getCategory.then((a) => {
                             if (a) {

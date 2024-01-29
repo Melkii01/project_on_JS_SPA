@@ -25,7 +25,7 @@ export class OperationsCreate {
                     // Сохраняем результат в переменную
                     this.categoryData = result;
                     this.showOperation();
-                    return result
+                    return result;
                 }
             } else {
                 throw new Error(result.message);
@@ -94,7 +94,6 @@ export class OperationsCreate {
         inputAmount.className = 'main-page-items-input';
         inputAmount.setAttribute('type', 'text');
         inputAmount.setAttribute('placeholder', 'Сумма в $...');
-        inputAmount.setAttribute('href', 'javascript:void(0)');
         inputAmount.setAttribute('id', 'inputAmount');
         mainPageItems.appendChild(inputAmount);
 
@@ -140,9 +139,11 @@ export class OperationsCreate {
         mainPageItemOptionCreateElement.innerText = 'Сохранить';
         mainPageItemOptionCreateElement.setAttribute('id', 'agreeButton');
         mainPageItemOptionCreateElement.onclick = (e) => {
+            //     console.log(e.target);
             e.preventDefault();
             this.sendEdit();
-        }
+            //     return false;
+        };
         mainPageItemOptions.appendChild(mainPageItemOptionCreateElement);
 
 
@@ -155,10 +156,12 @@ export class OperationsCreate {
             location.href = this.urlRoute;
         }
         mainPageItemOptions.appendChild(mainPageItemOptionDeleteElement);
+
     }
 
 // Отправка данных по клику
-    async sendEdit() {
+    sendEdit() {
+
         const selectType = document.getElementById('selectType');
         const selectCategory = document.getElementById('selectCategory');
         const inputAmount = document.getElementById('inputAmount');
@@ -242,6 +245,7 @@ export class OperationsCreate {
             } else {
                 errorMessage.style.display = 'flex';
                 errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
+
             }
         }, 1000);
     }
