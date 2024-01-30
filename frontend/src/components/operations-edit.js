@@ -76,7 +76,6 @@ export class OperationsEdit {
         }
         container.appendChild(mainPageTitle);
 
-
         // Создаем форму отправки
         const mainPageItems = document.createElement('form');
         mainPageItems.className = 'main-page-items flex-column d-flex';
@@ -115,7 +114,11 @@ export class OperationsEdit {
         this.categoryData.find(category => {
             const selectCategory = document.getElementById('selectCategory');
             if (category.title === this.operationData.category) {
-                selectCategory.selectedIndex = category.id - 1;
+                const options = Array.from(selectCategory.options);
+                const option = options.find(o => Number(o.value) === category.id);
+                if (option) {
+                    option.selected = true;
+                }
             }
         });
         mainPageItems.appendChild(selectCategory);
@@ -178,7 +181,6 @@ export class OperationsEdit {
         }
         mainPageItemOptions.appendChild(mainPageItemOptionCreateElement);
 
-
         // Кнопка отмена
         const mainPageItemOptionDeleteElement = document.createElement('button');
         mainPageItemOptionDeleteElement.className = 'main-page-item-options-delete btn btn-danger';
@@ -191,7 +193,7 @@ export class OperationsEdit {
     }
 
 // Отправка данных по клику
-     sendEdit() {
+    sendEdit() {
         const selectType = document.getElementById('selectType');
         const selectCategory = document.getElementById('selectCategory');
         const inputAmount = document.getElementById('inputAmount');
@@ -227,7 +229,6 @@ export class OperationsEdit {
             if (selectType.value && selectCategory.value && inputAmount.value
                 && inputDateElement.value && inputComment.value) {
                 try {
-
                     const result = await CustomHttp.request(config.host + '/'
                         + this.urlRoute.split('/')[1] + '/' + this.operationId, 'PUT', {
                         type: selectTypeValue,
@@ -250,7 +251,6 @@ export class OperationsEdit {
                         errorMessage.style.display = 'flex';
                         throw new Error(result.message);
                     }
-
                 } catch (e) {
                     errorMessage.style.display = 'flex';
                     errorMessage.firstChild.innerText = '- Сервер не работает';
@@ -258,7 +258,7 @@ export class OperationsEdit {
                 }
             } else {
                 errorMessage.style.display = 'flex';
-                errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
+                errorMessage.firstChild.innerText = '- У вас остались пустые поля';
             }
         }, 1000);
     }

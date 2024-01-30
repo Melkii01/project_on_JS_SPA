@@ -14,6 +14,9 @@ export class BudgetCreate {
 
         // Чистим страницу
         const mainPageItemsElement = document.getElementById('mainPageItems');
+        mainPageItemsElement.classList.remove('row');
+        mainPageItemsElement.classList.add('d-flex');
+        mainPageItemsElement.classList.add('flex-column');
         mainPageItemsElement.innerHTML = '';
 
         // Меняем оглавление

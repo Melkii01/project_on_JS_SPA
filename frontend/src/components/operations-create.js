@@ -13,7 +13,7 @@ export class OperationsCreate {
         this.getBudgetData(type);
     }
 
-    // Достаем категорию для отправки операции
+    // Достаем категорию для вывода в поле select категории
     async getBudgetData(type) {
         try {
             const result = await CustomHttp.request(config.host + '/categories/' + type);
@@ -25,6 +25,27 @@ export class OperationsCreate {
                     // Сохраняем результат в переменную
                     this.categoryData = result;
                     this.showOperation();
+                    return result;
+                }
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (e) {
+            return console.log(e);
+        }
+    }
+
+    // Достаем категорию для отправки операции
+    async getBudgetDataForSend(type) {
+        try {
+            const result = await CustomHttp.request(config.host + '/categories/' + type);
+
+            if (result) {
+                if (result.error || result.message) {
+                    throw new Error(result.message);
+                } else {
+                    // Сохраняем результат в переменную
+                    this.categoryData = result;
                     return result;
                 }
             } else {
@@ -53,7 +74,6 @@ export class OperationsCreate {
         }
         container.appendChild(mainPageTitle);
 
-
         // Создаем форму отправки
         const mainPageItems = document.createElement('form');
         mainPageItems.className = 'main-page-items flex-column d-flex';
@@ -74,7 +94,6 @@ export class OperationsCreate {
             selectTypeOption.innerText = 'Расход';
         }
         selectType.appendChild(selectTypeOption);
-
 
         // Создаем выбор категорий
         const selectCategory = document.createElement('select');
@@ -141,11 +160,10 @@ export class OperationsCreate {
         mainPageItemOptionCreateElement.onclick = (e) => {
             //     console.log(e.target);
             e.preventDefault();
-            this.sendEdit();
+            this.sendCreate();
             //     return false;
         };
         mainPageItemOptions.appendChild(mainPageItemOptionCreateElement);
-
 
         // Кнопка отмена
         const mainPageItemOptionDeleteElement = document.createElement('button');
@@ -156,11 +174,10 @@ export class OperationsCreate {
             location.href = this.urlRoute;
         }
         mainPageItemOptions.appendChild(mainPageItemOptionDeleteElement);
-
     }
 
 // Отправка данных по клику
-    sendEdit() {
+    sendCreate() {
 
         const selectType = document.getElementById('selectType');
         const selectCategory = document.getElementById('selectCategory');
@@ -177,7 +194,7 @@ export class OperationsCreate {
         let selectCategoryId;
         if (selectType.value === 'Доход') {
             selectTypeValue = 'income';
-            const getCategory = this.getBudgetData(selectTypeValue)
+            const getCategory = this.getBudgetDataForSend(selectTypeValue)
                 .then((categorys) => {
                     return categorys.find((category) => {
                         if (category.title === selectCategory.value) {
@@ -192,7 +209,7 @@ export class OperationsCreate {
             });
         } else if (selectType.value === 'Расход') {
             selectTypeValue = 'expense';
-            const getCategory = this.getBudgetData(selectTypeValue)
+            const getCategory = this.getBudgetDataForSend(selectTypeValue)
                 .then((categorys) => {
                     return categorys.find((category) => {
                         if (category.title === selectCategory.value) {
@@ -244,8 +261,7 @@ export class OperationsCreate {
                 }
             } else {
                 errorMessage.style.display = 'flex';
-                errorMessage.firstChild.innerText = '- Вы ввели пустые значения';
-
+                errorMessage.firstChild.innerText = '- У вас остались пустые поля';
             }
         }, 1000);
     }
