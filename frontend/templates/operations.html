@@ -1,0 +1,65 @@
+<div class="main-page">
+    <div class="container" id="container">
+        <h1 class="main-page-title">Доходы и расходы</h1>
+
+        <div class="main-page-item-options-create mb-5">
+            <button class="main-page-item-options-edit btn btn-success me-2 mb-1" id="createIncomeBtn">Создать доход
+            </button>
+            <button class="main-page-item-options-delete btn btn-danger mb-1" id="createExpenseBtn">Создать расход
+            </button>
+        </div>
+        <div class="main-page-nav d-flex flex-row align-items-center">
+            <div class="main-page-nav-btn d-flex flex-wrap" id="btnBlock">
+                <button type="button" class="btn btn-outline-secondary" id="showToday">Сегодня</button>
+                <button type="button" class="btn btn-outline-secondary" id="showWeek">Неделя</button>
+                <button type="button" class="btn btn-outline-secondary" id="showMonth">Месяц</button>
+                <button type="button" class="btn btn-outline-secondary" id="showYear">Год</button>
+                <button type="button" class="btn btn-outline-secondary" id="showAll">Все</button>
+                <button type="button" class="btn btn-outline-secondary" id="showInterval" disabled>Интервал</button>
+            </div>
+            <div class="main-page-nav-interval d-flex flex-nowrap">
+                <div class="d-flex flex-nowrap">
+                    c
+                    <div class="flex-column d-flex">
+                        <label id="startDateLabel" for="startDate"
+                               class="main-page-nav-interval-date my-main-page-nav-interval-date">
+                            Дата
+                        </label>
+                        <input type="text" id="startDate" class="main-page-nav-interval-input">
+                    </div>
+                </div>
+                <div class="d-flex flex-nowrap">
+                    по
+                    <div class="flex-column d-flex">
+                        <label id="endDateLabel" for="endDate" class="main-page-nav-interval-date"
+                        >Дата</label>
+                        <input type="text" id="endDate" class="main-page-nav-interval-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблица -->
+        <div class="row">
+            <div class="table-responsive-xxl">
+                <table class="table">
+                    <thead class="table-head">
+                    <tr>
+                        <th scope="col" class="table-head-color">№ операции</th>
+                        <th scope="col" class="table-head-color">Тип</th>
+                        <th scope="col" class="table-head-color">Категория</th>
+                        <th scope="col" class="table-head-color">Сумма</th>
+                        <th scope="col" class="table-head-color">Дата</th>
+                        <th scope="col" class="table-head-color">Комментарий</th>
+                        <th scope="col" class="table-head-color"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="tableBody">
+                    <!-- Данные с сервера -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

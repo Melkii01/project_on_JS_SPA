@@ -1,7 +1,10 @@
 import {Form} from "./components/form.js";
 import {Auth} from "./services/auth.js";
-import {ChartPie} from "./utils/chart-pie.js";
 import {Burger} from "./components/burger.js";
+import {Balance} from "./components/balance.js";
+import {Budget} from "./components/budget.js";
+import {Operations} from "./components/operations.js";
+import {Main} from "./components/main.js";
 
 
 export class Router {
@@ -21,7 +24,7 @@ export class Router {
                 template: 'templates/index.html',
                 styles: 'styles/index.css',
                 load: () => {
-                    new ChartPie();
+                    new Main();
                 }
             },
             {
@@ -48,79 +51,25 @@ export class Router {
                 template: 'templates/income.html',
                 styles: 'styles/income.css',
                 load: () => {
-                    // new Choice();
+                    new Budget();
                 }
             },
             {
-                route: '#/income-create',
-                title: 'Создать доход',
-                template: 'templates/income-create.html',
-                styles: 'styles/income-create.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/income-edit',
-                title: 'Редактировать доход',
-                template: 'templates/income-edit.html',
-                styles: 'styles/income-edit.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/outcome',
+                route: '#/expense',
                 title: 'Расход',
-                template: 'templates/outcome.html',
-                styles: 'styles/outcome.css',
+                template: 'templates/expense.html',
+                styles: 'styles/expense.css',
                 load: () => {
-                    // new ();
+                    new Budget();
                 }
             },
             {
-                route: '#/outcome-create',
-                title: 'Создать расход',
-                template: 'templates/outcome-create.html',
-                styles: 'styles/outcome-create.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/outcome-edit',
-                title: 'Редактировать расход',
-                template: 'templates/outcome-edit.html',
-                styles: 'styles/outcome-edit.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/income-outcome',
+                route: '#/operations',
                 title: 'Доходы и расходы',
-                template: 'templates/income-outcome.html',
-                styles: 'styles/income-outcome.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/income-outcome-create',
-                title: 'Создать доход/расход',
-                template: 'templates/income-outcome-create.html',
-                styles: 'styles/income-outcome-create.css',
-                load: () => {
-                    // new ();
-                }
-            },
-            {
-                route: '#/income-outcome-edit',
-                title: 'Редактирование дохода/расхода',
-                template: 'templates/income-outcome-edit.html',
-                styles: 'styles/income-outcome-edit.css',
-                load: () => {
-                    // new ();
+                template: 'templates/operations.html',
+                styles: 'styles/operations.css',
+                load:  () => {
+                    new Operations();
                 }
             },
         ];
@@ -129,6 +78,7 @@ export class Router {
     async openRoute() {
         // URL адрес
         const urlRoute = window.location.hash.split('?')[0];
+
         // Если выходим с акк
         if (urlRoute === '#/logout') {
             Auth.logout();
@@ -170,12 +120,14 @@ export class Router {
 
             if (userInfo && accessToken) {
                 this.profilefullNameElement.innerText = userInfo.name + ' ' + userInfo.lastName;
+                // Загрузка баланса
+                new Balance();
             } else {
                 window.location.href = '#/login';
             }
         }
 
-        // Скрипт для бургера, применяется везде
+        // Загрузка основных скриптов
         new Burger();
 
         // Загрузка скриптов страниц по url

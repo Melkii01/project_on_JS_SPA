@@ -75,7 +75,7 @@ a {
 .sidebar-content {
     height: calc(100vh - 120px);
     padding: 60px 0 0;
-    color: #052C65;
+    color: #1d0565;
     font-size: 14px;
 }
 
@@ -84,7 +84,7 @@ a {
     flex-grow: 1;
 }
 
-.sidebar-svg-main{
+.sidebar-svg-main {
     margin: 0 9px 5px 0;
 }
 
@@ -112,6 +112,10 @@ a {
 .sidebar-user {
     border-top: 1px solid #D9D9D9;
     padding: 20px;
+}
+
+.dropdown-toggle {
+    white-space: normal !important;
 }
 
 /* В меню слева навигаторные настройки в 'категории' */
@@ -191,6 +195,11 @@ a {
 
 #cash {
     color: #0D6EFD;
+    cursor: pointer;
+}
+
+#currency {
+    color: #0D6EFD;
 }
 
 /* Настройки юзера */
@@ -268,17 +277,25 @@ a {
     margin-right: 30px;
 }
 
-.main-page-nav-interval-link {
+.main-page-nav-interval-date {
     color: #6C757D;
     margin-left: 17px;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
-.my-main-page-interval-link {
+.my-main-page-nav-interval-date {
     margin-right: 27px;
 }
 
-.main-page-nav-interval-link:hover {
+.main-page-nav-interval-date:hover {
     color: #545a60;
+}
+
+.main-page-nav-interval-input{
+    width: 0;
+    height: 0;
+    opacity: 0;
 }
 
 @media screen and (max-width: 1231px) {
@@ -286,7 +303,7 @@ a {
         flex-direction: column;
     }
 
-    .my-main-page-interval-link {
+    .my-main-page-nav-interval-date {
         margin-right: 0;
     }
 }
@@ -337,6 +354,13 @@ a {
     }
 }
 
+@media screen and (max-width: 420px) {
+
+    .main-page-items {
+        justify-content: center;
+    }
+}
+
 .main-page-item {
     display: flex;
     flex-direction: column;
@@ -346,6 +370,12 @@ a {
     padding: 20px;
     min-width: 352px;
     position: relative;
+}
+
+@media screen and (max-width: 420px) {
+    .main-page-item {
+        min-width: 100%;
+    }
 }
 
 .main-page-item-link:hover {
@@ -403,3 +433,80 @@ a {
     color: #000;
     font-size: 15px;
 }
+
+@media screen and (max-width: 540px) {
+    .main-page-items-input {
+        width: 100%;
+    }
+
+}
+
+/* Стили для ошибок*/
+.error-message {
+    text-align: center;
+    font-family: 'RobotoBold', sans-serif;
+    color: red;
+    display: none;
+    width: 100%;
+}
+
+.error-message-text {
+    font-family: 'Roboto', sans-serif;
+    text-align: left;
+    font-size: 12px;
+}
+
+/* Стили для попапа*/
+.popup {
+    z-index: 11111;
+    background: rgba(0, 0, 0, 0.45);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transition: 0.5s all;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    opacity: 0;
+}
+
+.popup-active {
+    opacity: 1;
+    pointer-events: all;
+    transition: 1s all;
+}
+
+.popup-block {
+    border-radius: 12px;
+    border: 1px solid #CED4DA;
+    background: #FFF;
+    max-width: 520px;
+    padding: 40px;
+    opacity: 1;
+    min-height: 161px;
+}
+
+@media screen and (max-width: 580px) {
+    .popup-block {
+        width: 80%;
+    }
+}
+
+.popup-text {
+    color: #290661;
+    text-align: center;
+    font-family: 'RobotoBold', sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    padding-bottom: 10px;
+}
+
+#mainPageChartNoData1, #mainPageChartNoData2 {
+    padding: 20px;
+    text-align: center;
+}
+

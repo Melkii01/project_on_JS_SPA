@@ -5,13 +5,19 @@
     <title id="page-title">Главная</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/air-datepicker.css">
     <link rel="stylesheet" href="styles/common.css">
     <link rel="stylesheet" href="styles/index.css" id="styles">
 </head>
 <body>
+
+<!-- Показывается, если авторизуемся или регистрируемся -->
 <div id="authentication"></div>
 
+<!-- Показывается, если авторизованы -->
 <div class="main" id="main">
+
+    <!-- Меню сайдбара -->
     <aside class="sidebar" id="sidebar">
         <a href="#/" class="sidebar-logo text-decoration-none my-link-js">
             <img class="my-link-img-js" src="/images/logo-small.png" alt="Logo">
@@ -38,7 +44,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#/income-outcome" class="nav-link my-link-js">
+                        <a href="#/operations" class="nav-link my-link-js">
                             <svg class="sidebar-svg-income" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                  viewBox="0 0 16 16"
                                  fill="none">
@@ -69,10 +75,12 @@
                                 <div class="accordion-body">
                                     <ul class="accordion-body-list list-unstyled ">
                                         <li class="accordion-body-item1 nav-item">
-                                            <a class="accordion-body-link nav-link my-link-js" href="#/income">Доходы</a>
+                                            <a class="accordion-body-link nav-link my-link-js"
+                                               href="#/income">Доходы</a>
                                         </li>
                                         <li class="accordion-body-item2 nav-item">
-                                            <a class="accordion-body-link nav-link my-link-js" href="#/outcome">Расходы</a>
+                                            <a class="accordion-body-link nav-link my-link-js"
+                                               href="#/expense">Расходы</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -80,10 +88,14 @@
                         </div>
                     </li>
                 </ul>
+
+                <!-- Баланс юзера -->
                 <div class="wallet">
-                    <p>Баланс: <span id="cash">500$</span></p>
+                    <p>Баланс: <span id="cash">0</span><span id="currency">$</span></p>
                 </div>
             </div>
+
+            <!-- Ава и имя юзера -->
             <div class="sidebar-user dropdown">
                 <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
                    id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -97,9 +109,11 @@
         </div>
     </aside>
 
+    <!-- Контент меняется в зависимости url страницы -->
     <div id="content"></div>
 </div>
 
+<!-- Открыть бургер меню -->
 <div id="burger-open">
     <svg id="burger-open-stroke" width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none"
          xmlns="http://www.w3.org/2000/svg"
@@ -113,6 +127,8 @@
         </g>
     </svg>
 </div>
+
+<!-- Закрыть бургер меню -->
 <div id="burger-close">
     <svg fill="#052C65" id="burger-close-stroke" height="40px" width="40px" version="1.1"
          xmlns="http://www.w3.org/2000/svg"
@@ -121,6 +137,30 @@
         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
         <g id="SVGRepo_iconCarrier"> <g> <g> <polygon
                 points="512,59.076 452.922,0 256,196.922 59.076,0 0,59.076 196.922,256 0,452.922 59.076,512 256,315.076 452.922,512 512,452.922 315.076,256 "></polygon> </g> </g> </g></svg>
+</div>
+
+<!-- Показать всплывающее окно со своими данными -->
+<div class="popup" id="popup">
+    <div class="popup-block">
+        <div class="popup-text" id="popupText">Какой-нибудь вопрос?</div>
+        <div class="main-page-item-options justify-content-center">
+            <button class="main-page-item-options-edit btn btn-success me-2" id="popupAgreeButton">Да, удалить</button>
+            <button class="main-page-item-options-delete btn btn-danger" id="popupCancelButton">Не удалять</button>
+        </div>
+    </div>
+</div>
+
+<!-- Показать всплывающее окно для смены баланса -->
+<div class="popup" id="popupCash">
+    <div class="popup-block">
+        <div class="popup-text">Введите новое значение</div>
+        <input class="main-page-items-input" type="text" id="inputCash">
+        <div class="main-page-item-options justify-content-center">
+            <button class="main-page-item-options-edit btn btn-success me-2" id="popupCashAgreeButton">Подтвердить
+            </button>
+            <button class="main-page-item-options-delete btn btn-danger" id="popupCashCancelButton">Отмена</button>
+        </div>
+    </div>
 </div>
 
 </body>

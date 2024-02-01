@@ -1,77 +1,126 @@
 import {Chart} from "chart.js/auto";
+import {RandomColor} from "./randomColor.js";
 
 export class ChartPie {
-    // Параметры первого пирога
-    partsPie1 = [111, 222, 333, 444, 555];
-    labels1 = ['Red', 'Orange', 'Yellow', 'Green', 'Blue'];
-    labelsColor1 = ['#DC3545', '#FD7E14', '#FFC107', '#20C997', '#0D6EFD'];
+    incomeData = [];
+    expenseData = [];
 
-    // Параметры второго пирога
-    partsPie2 = [411, 222, 333, 444, 155];
-    labels2 = ['Red', 'Orange', 'Yellow', 'Green', 'Blue'];
-    labelsColor2 = ['#DC3545', '#FD7E14', '#FFC107', '#20C997', '#0D6EFD'];
-
-    constructor() {
-        this.myChart1();
-        this.myChart2();
+    constructor(data) {
+        data.forEach((item) => {
+            if (item.type === 'income') {
+                this.incomeData.push(item);
+            } else if (item.type === 'expense') {
+                this.expenseData.push(item);
+            }
+        })
+        this.myChart1(this.incomeData);
+        this.myChart2(this.expenseData);
     }
 
-    myChart1() {
+    // Пирог дохода
+    myChart1(data) {
+        // Если на странице используется пирог, удалить его
+        let chartStatus = Chart.getChart("myChart1"); // <canvas> id
+        if (chartStatus !== undefined) {
+            chartStatus.destroy();
+        }
+
+        // Параметры первого пирога
+        let partsPie = [];
+        let labels = [];
+        let labelsColor = [];
         const ctx = document.getElementById('myChart1');
+        const mainPageChartNoData = document.getElementById('mainPageChartNoData1');
 
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: this.labels1,
-                datasets: [
-                    {
-                        label: 'Доход',
-                        data: this.partsPie1,
-                        backgroundColor: this.labelsColor1,
+        if (!data.length) {
+            mainPageChartNoData.style.display = 'block';
+        } else {
+            mainPageChartNoData.style.display = 'none';
+
+            data.forEach((item) => {
+                partsPie.push(item.amount);
+                labels.push(item.category);
+                labelsColor.push("#" + RandomColor())
+            })
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Доход',
+                            data: partsPie,
+                            backgroundColor: labelsColor,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true
-                    }
-                }
-            },
-        });
+                },
+            });
+        }
     }
 
-    myChart2() {
-        const ctx = document.getElementById('myChart2');
+    // Пирог расхода
+    myChart2(data) {
+        // Если на странице используется пирог, удалить его
+        let chartStatus = Chart.getChart("myChart2"); // <canvas> id
+        if (chartStatus !== undefined) {
+            chartStatus.destroy();
+        }
 
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: this.labels2,
-                datasets: [
-                    {
-                        label: 'Расход',
-                        data: this.partsPie2,
-                        backgroundColor: this.labelsColor2,
+        // Параметры второго пирога
+        let partsPie = [];
+        let labels = [];
+        let labelsColor = [];
+        const ctx = document.getElementById('myChart2');
+        const mainPageChartNoData = document.getElementById('mainPageChartNoData2');
+
+        if (!data.length) {
+            mainPageChartNoData.style.display = 'block';
+        } else {
+            mainPageChartNoData.style.display = 'none';
+
+            data.forEach((item) => {
+                partsPie.push(item.amount);
+                labels.push(item.category);
+                labelsColor.push("#" + RandomColor())
+            })
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Расход',
+                            data: partsPie,
+                            backgroundColor: labelsColor,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true
+                        }
                     }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true
-                    }
-                }
-            },
-        });
+                },
+            });
+        }
     }
 }
 
